@@ -17,8 +17,8 @@ var org = nforce.createConnection({
 });
 
 router.get('/callback', function(req, res) {
-    if (req.params['code']) {
-        sfCode = req.params['code'];
+    if (req.query.code) {
+        sfCode = req.query.code;
         org.authenticate({code: sfCode}, (err, resp)=>{
             if (!err) {
             console.log('Access token : '+resp.access_token);
