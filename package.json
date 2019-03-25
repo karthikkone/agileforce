@@ -1,0 +1,19 @@
+{
+  "name": "agileforce",
+  "version": "1.0.0",
+  "description": "agileforce uses salesforce MetaData & REST API to provide CI/CD",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "6.x"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "lokijs": "^1.5.6",
+    "nforce": "1.10.2"
+  }
+}
