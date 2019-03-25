@@ -1,5 +1,6 @@
 const env = process.env.NODE_ENV; //'dev' or 'test'
 
+console.log('loading env : $env');
 const dev = {
     app: {
         port: parseInt(process.env.PORT) || 8080
