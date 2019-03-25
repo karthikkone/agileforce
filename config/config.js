@@ -1,7 +1,7 @@
-const env = process.env.NODE_ENV; //'dev' or 'test'
+const env = process.env.NODE_ENV; //'production' or 'test'
 
 console.log(`loading env : ${env}`);
-const dev = {
+const production = {
     app: {
         port: parseInt(process.env.PORT) || 8080
     },
@@ -24,7 +24,7 @@ const test = {
 }
 
 const config = {
-    dev,
+    production,
     test
 };
 
