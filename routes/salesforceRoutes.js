@@ -20,7 +20,7 @@ var org = nforce.createConnection({
 
 router.use('/callback', function(req, res, next){
     if (req.query.code) {
-        org.authenticate(function(err, response){
+        org.authenticate({code: req.query.code}, function(err, response){
             if (!err) {
                 console.log('Access Token: '+response.access_token);
                 oauth = response;
