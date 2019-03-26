@@ -22,11 +22,9 @@ router.get('/callback', function(req, res) {
         org.authenticate({code: sfCode}, (err, resp)=>{
             if (!err) {
             console.log('Access token : '+resp.access_token);
-            oauth = resp;
-                return res.status(200).json({message: 'Authorized by Salesforce'});
+            oauth = resp;   
             } else {
                 console.log('failed to get access token');
-                return res.status(401).json({error: 'Not Authorized by Salesforce'});
             }
         });
     } else {
