@@ -24,7 +24,7 @@ router.get('/callback', function (req, res) {
 });
 
 router.get('/oauth', function (req, res) {
-    res.redirect(authHelper.getAuthUri());
+    res.redirect(authHelper.getSalesforceAuthUri());
 
 });
 module.exports = router;
