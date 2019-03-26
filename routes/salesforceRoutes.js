@@ -6,27 +6,25 @@ const authHelper = require('../services/authHelper');
 
 
 
-router.get('/callback', function(req, res) {
-    
-    var sfAuthPromise = authHelper.salesforceAuthorize(req.query.code);
-    var statusCode; 
-    sfAuthPromise.then((authData)=>{
-        console.log('oauth data ',authData);
-        ouath = authData;
-        statusCode = 200;
-    }).catch((err) => {
-        statusCode = 401;
-    });
+router.get('/callback', function (req, res) {
 
-    if (statusCode == 200) {
-        res.status(200).json({message: 'authorized'});
-    } else {
-        res.status(401).json({error: 'unauthorized'});
-    }
+    var sfAuthPromise = authHelper.salesforeAuthorize(req.query.code);
+    sfAuthPromise.then(
+        //success handler
+        (authData) => {
+            console.log('oauth data ', authData);
+            ouath = authData;
+            res.status(200).json({ message: 'authorized' });
+        },
+        //error handler
+        (err) => {
+            res.status(401).json({error: 'unauthorized'});
+        }
+    );
 });
 
-router.get('/oauth', function(req, res){
-    res.redirect(authHelper.getSalesforceAuthUri());
+router.get('/oauth', function (req, res) {
+    res.redirect(authHelper.getAuthUri());
 
 });
 module.exports = router;
