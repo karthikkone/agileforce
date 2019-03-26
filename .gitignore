@@ -7,3 +7,7 @@ npm-debug.log*
 .eslintcache
 .env
 .DS_Store
+
+#should be checked in ?
+#skip only to avoid merge conflicts
+package-lock.json
