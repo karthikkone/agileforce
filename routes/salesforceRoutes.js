@@ -37,7 +37,15 @@ router.use('/callback', function(req, res, next){
 });
 
 router.get('/callback', function(req, res) {
-    res.end();
+    
+    if (oauth) {
+        res.status(200).json({status: 200, message: 'authorization sucessfull'});
+    } else if (res.statusCode == 406) {
+        res.json({status: 406,error: 'Unexpected request'});
+        
+    } else {
+        res.json({status: 401, error: 'Unauthorized'});
+    }
 });
 
 router.get('/oauth', function(req, res){
