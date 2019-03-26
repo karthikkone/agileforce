@@ -16,20 +16,23 @@ var org = nforce.createConnection({
     redirectUri: sfRedirectUri,
 });
 
-router.get('/callback', function(req, res) {
+//add salesforce oauth handlers as router middleware
+
+router.use('/callback', function(req, res, next){
     if (req.query.code) {
-        sfCode = req.query.code;
-        org.authenticate({code: sfCode}, (err, resp)=>{
-            if (!err) {
-            console.log('Access token : '+resp.access_token);
-            oauth = resp;   
-            } else {
-                console.log('failed to get access token');
-            }
+        org.authenticate(function(request, response){
+            oauth = response;
+            console.log('oauth = ', oauth);
         });
+        next();
     } else {
-        return res.status(406).json({error: 'Unexpected request no valid code found'});
+        res.status(406);
+        next('route'); //skip any middleware go back to route
     }
+});
+
+router.get('/callback', function(req, res) {
+    res.end();
 });
 
 router.get('/oauth', function(req, res){
