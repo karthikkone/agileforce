@@ -22,11 +22,14 @@ router.get('/callback', function(req, res) {
         org.authenticate({code: sfCode}, (err, resp)=>{
             if (!err) {
             console.log('Access token : '+resp.access_token);
-            oauth = resp;   
+            oauth = resp;
+            
             } else {
                 console.log('failed to get access token');
             }
         });
+
+        console.log(`sforce authentication ${oauth}`);
     } else {
         return res.status(406).json({error: 'Unexpected request no valid code found'});
     }
