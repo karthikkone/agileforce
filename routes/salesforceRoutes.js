@@ -18,9 +18,9 @@ router.get('/callback',(req, res)=>{
     org.authenticate({code: req.query.code}, function(err, response){
         if (!err) {
             console.log('OK auth success ',response);
-            res.status(200).json({message:'authorization succeded'});
+            return res.status(200).json({message:'authorization succeded'});
         } else {
-            res.status(401).json({error: 'authorization failed'});
+            return res.status(401).json({error: 'authorization failed'});
         }
     });
 });
