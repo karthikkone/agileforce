@@ -13,12 +13,6 @@ const authFilter = require('./middlewares/authfilter');
 const app = express();
 const port = config.app.port;
 
-//set application middelewares chain
-app.use((req, res, next)=>{
-    requestLogger(req,res,next);
-    authFilter(req,res,next);
-});
-
 
 //home
 app.get('/',(request, response) => {
