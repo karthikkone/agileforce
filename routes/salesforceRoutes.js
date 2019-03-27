@@ -4,26 +4,33 @@ const config = require('../config/config');
 const nforce = require('nforce');
 const authHelper = require('../services/authHelper');
 
-function getAccessToken(req, res, next){
-    var sfAuthPromise = authHelper.salesforceAuthorize(req.query.code);
-    sfAuthPromise.then((authData)=>{
-        console.log('SUCCESS oauth data ', authData);
-        next();
-    })
-    .catch((err)=> {
-        //delegate to express error handler
-        console.log('error ocurred while authorizing with saleasforce ',err);
-        throw new Error(JSON.stringify({status: 401, error: 'authorization failed'}));
-    });
-}
+const nforce = require('nforce');
 
-router.get('/callback', getAccessToken, function (req, res) {
-    console.log('request successfully passed sf auth middleware to route');
-    res.send("authorized");
+
+let sfClientId = config.salesforce.clientId;
+let sfClientSecret = config.salesforce.clientSecret;
+let sfRedirectUri = config.salesforce.callBackUri;
+
+var org = nforce.createConnection({
+    clientId: sfClientId,
+    clientSecret: sfClientSecret,
+    redirectUri: sfRedirectUri,
+});
+
+router.get('/callback',(req, res)=>{
+    org.authenticate({code: req.query.code}, function(err, response){
+        if (!err) {
+            console.log('OK auth success ',response);
+            res.status(200).json({message:'authorization succeded'});
+        } else {
+            res.status(401).json({error: 'authorization failed'});
+        }
+    });
 });
 
 router.get('/oauth', function (req, res) {
-    res.redirect(authHelper.getSalesforceAuthUri());
+    res.redirect(org.getAuthUri());
 
 });
+
 module.exports = router;
