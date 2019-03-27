@@ -8,7 +8,7 @@ let sfClientId = config.salesforce.clientId;
 let sfClientSecret = config.salesforce.clientSecret;
 let sfRedirectUri = config.salesforce.callBackUri;
 
-var org = nforce.createConnection({
+const org = nforce.createConnection({
     clientId: sfClientId,
     clientSecret: sfClientSecret,
     redirectUri: sfRedirectUri,
