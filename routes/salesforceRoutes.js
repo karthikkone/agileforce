@@ -2,41 +2,27 @@ const express = require('express');
 const router = express.Router();
 const config = require('../config/config');
 const nforce = require('nforce');
+const authHelper = require('../services/authHelper');
 
+router.use('/callback', function(req, res, next){
+    var sfAuthPromise = authHelper.salesforceAuthorize(req.query.code);
+    sfAuthPromise.then((authData)=>{
+        console.log('oauth data ', authData);
+        next();
+    })
+    .catch((err)=> {
+        //delegate to express error handler
+        throw new Error(JSON.stringify({status: 401, error: 'authorization failed'}));
+    });
+}
+);
 
-let sfClientId = config.salesforce.clientId;
-let sfClientSecret = config.salesforce.clientSecret;
-let sfRedirectUri = config.salesforce.callBackUri;
-let accessCode;
-var oauth;
-
-var org = nforce.createConnection({
-    clientId: sfClientId,
-    clientSecret: sfClientSecret,
-    redirectUri: sfRedirectUri,
+router.get('/callback', function (req, res) {
+    res.status(200).json({status: 200, message:'authorization succeded'});
 });
 
-router.get('/callback', function(req, res) {
-    if (req.query.code) {
-        sfCode = req.query.code;
-        org.authenticate({code: sfCode}, (err, resp)=>{
-            if (!err) {
-            console.log('Access token : '+resp.access_token);
-            oauth = resp;
-            
-            } else {
-                console.log('failed to get access token');
-            }
-        });
-
-        console.log(`sforce authentication ${oauth}`);
-    } else {
-        return res.status(406).json({error: 'Unexpected request no valid code found'});
-    }
-});
-
-router.get('/oauth', function(req, res){
-    res.redirect(org.getAuthUri());
+router.get('/oauth', function (req, res) {
+    res.redirect(authHelper.getSalesforceAuthUri());
 
 });
 module.exports = router;
