@@ -19,7 +19,7 @@ function getAccessToken(req, res, next){
 
 router.get('/callback', getAccessToken, function (req, res) {
     console.log('request successfully passed sf auth middleware to route');
-    res.end();
+    res.send("authorized");
 });
 
 router.get('/oauth', function (req, res) {
