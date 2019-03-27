@@ -12,13 +12,14 @@ router.use('/callback', function(req, res, next){
     })
     .catch((err)=> {
         //delegate to express error handler
+        console.log('error ocurred while authorizing with saleasforce ',err);
         throw new Error(JSON.stringify({status: 401, error: 'authorization failed'}));
     });
 }
 );
 
 router.get('/callback', function (req, res) {
-    console.log('request successfully passed sf auth middleware to route /callback');
+    console.log('request successfully passed sf auth middleware to route');
     res.status(200).json({status: 200, message:'authorization succeded'});
 });
 
