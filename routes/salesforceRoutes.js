@@ -4,9 +4,6 @@ const config = require('../config/config');
 const nforce = require('nforce');
 const authHelper = require('../services/authHelper');
 
-const nforce = require('nforce');
-
-
 let sfClientId = config.salesforce.clientId;
 let sfClientSecret = config.salesforce.clientSecret;
 let sfRedirectUri = config.salesforce.callBackUri;
