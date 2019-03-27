@@ -15,14 +15,19 @@ const org = nforce.createConnection({
 });
 
 router.get('/callback',(req, res)=>{
+    console.log('response 1 ',res);
     org.authenticate({code: req.query.code}, function(err, response){
+        console.log('response 2 ',res);
         if (!err) {
+            console.log('response 3 ',res);
             console.log('OK auth success ',response);
             return res.status(200).json({message:'authorization succeded'});
         } else {
+            console.log('response 4 ',res);
             return res.status(401).json({error: 'authorization failed'});
         }
     });
+    console.log('response 5 ',res);
 });
 
 router.get('/oauth', function (req, res) {
