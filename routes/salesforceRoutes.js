@@ -7,7 +7,7 @@ const authHelper = require('../services/authHelper');
 router.use('/callback', function(req, res, next){
     var sfAuthPromise = authHelper.salesforceAuthorize(req.query.code);
     sfAuthPromise.then((authData)=>{
-        console.log('oauth data ', authData);
+        console.log('SUCCESS oauth data ', authData);
         next();
     })
     .catch((err)=> {
@@ -18,6 +18,7 @@ router.use('/callback', function(req, res, next){
 );
 
 router.get('/callback', function (req, res) {
+    console.log('request successfully passed sf auth middleware to route /callback');
     res.status(200).json({status: 200, message:'authorization succeded'});
 });
 
