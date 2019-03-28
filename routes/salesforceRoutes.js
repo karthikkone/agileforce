@@ -61,7 +61,7 @@ router.get('/orgs', isAuthorized, (req, res) => {
 });
 
 router.get('/meta',isAuthorized,(req, res)=> {
-    org.meta.listMetaData({
+    org.meta.listMetadata({
         queries:[
             {type: 'ApexClass'},
             {type: 'CustomObject'}
