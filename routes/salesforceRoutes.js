@@ -49,7 +49,7 @@ function isAuthorized(req, res, next) {
 
 //Salesforce REST api
 router.get('/orgs', isAuthorized, (req, res) => {
-    var q = 'SELECT Name, Id, Type__c FROM Org__c LIMIT 10';
+    var q = 'SELECT Id, Name, Type__c, password__c, username__c FROM Org__c LIMIT 10';
     org.query({ query: q }, function (err, resp) {
         if (!err && resp.records) {
             var orgs = resp.records;
@@ -73,4 +73,5 @@ router.get('/meta',isAuthorized,(req, res)=> {
     });
 
 });
+
 module.exports = router;
