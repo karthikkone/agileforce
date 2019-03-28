@@ -47,5 +47,17 @@ router.get('/accounts', (req, res)=>{
             return res.status(400).json({error: 'no org data found'});
         }
     });
-})
+});
+
+router.get('/orgs',(req, res)=>{
+    var q = 'SELECT Name, Id, Type__c FROM Org__c LIMIT 10';
+    org.query({query:q}, function(err, resp){
+        if (!err && resp.records) {
+            var orgs = resp.records[0];
+            return res.status(200).json(orgs);
+        } else {
+            return res.status(400).json({error: 'no org data found'});
+        }
+    });
+});
 module.exports = router;
