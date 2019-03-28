@@ -16,6 +16,7 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "lokijs": "^1.5.6",
-    "nforce": "1.10.2"
+    "nforce": "1.10.2",
+    "nforce-metadata": "^1.1.0"
   }
 }
