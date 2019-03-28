@@ -13,7 +13,8 @@ const authFilter = require('./middlewares/authfilter');
 const app = express();
 const port = config.app.port;
 
-
+//static content
+app.use(express.static('public'));
 //home
 app.get('/',(request, response) => {
     response.send('hello from express');
