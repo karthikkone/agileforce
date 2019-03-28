@@ -12,18 +12,18 @@ const org = nforce.createConnection({
     clientId: sfClientId,
     clientSecret: sfClientSecret,
     redirectUri: sfRedirectUri,
+    mode: 'single' //cache oauth in connection object
 });
 
+//authentication
 router.get('/callback',(req, res)=>{
-    console.log('response 1 ',res);
+    
     org.authenticate({code: req.query.code}, function(err, response){
-        console.log('response 2 ',res);
         if (!err) {
-            console.log('response 3 ',res);
-            console.log('OK auth success ',response);
+            console.log('could not be authorized by Salesforce ', err);
             return res.status(200).json({message:'authorization succeded'});
         } else {
-            console.log('response 4 ',res);
+            console.log('authorized by salesforce');
             return res.status(401).json({error: 'authorization failed'});
         }
     });
@@ -35,4 +35,17 @@ router.get('/oauth', function (req, res) {
 
 });
 
+
+//Salesforce REST api
+router.get('/accounts', (req, res)=>{
+    var q = 'SELECT Id, Name, CreatedDate, BillingCity FROM Account LIMIT 10';
+    org.query({query:q}, function(err, resp){
+        if (!err && resp.records) {
+            var accs = resp.records[0];
+            return res.status(200).json(accs);
+        } else {
+            return res.status(400).json({error: 'no org data found'});
+        }
+    });
+})
 module.exports = router;
