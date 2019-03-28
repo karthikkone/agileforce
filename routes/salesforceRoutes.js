@@ -40,7 +40,7 @@ router.get('/accounts', (req, res)=>{
     var q = 'SELECT Id, Name, CreatedDate, BillingCity FROM Account LIMIT 10';
     org.query({query:q}, function(err, resp){
         if (!err && resp.records) {
-            var accs = resp.records[0];
+            var accs = resp.records;
             return res.status(200).json(accs);
         } else {
             return res.status(400).json({error: 'no org data found'});
@@ -52,7 +52,7 @@ router.get('/orgs',(req, res)=>{
     var q = 'SELECT Name, Id, Type__c FROM Org__c LIMIT 10';
     org.query({query:q}, function(err, resp){
         if (!err && resp.records) {
-            var orgs = resp.records[0];
+            var orgs = resp.records;
             return res.status(200).json(orgs);
         } else {
             return res.status(400).json({error: 'no org data found'});
