@@ -16,15 +16,15 @@ const org = nforce.createConnection({
 });
 
 //authentication
-router.get('/callback',(req, res)=>{
-    
-    org.authenticate({code: req.query.code}, function(err, response){
+router.get('/callback', (req, res) => {
+
+    org.authenticate({ code: req.query.code }, function (err, response) {
         if (!err) {
             console.log('authorized by Salesforce');
-            return res.status(200).json({message:'authorization succeded'});
+            return res.status(200).json({ message: 'authorization succeded' });
         } else {
             console.log('could not be authorized by Salesforce ', err);
-            return res.status(401).json({error: 'authorization failed'});
+            return res.status(401).json({ error: 'authorization failed' });
         }
     });
 });
@@ -34,28 +34,24 @@ router.get('/oauth', function (req, res) {
 
 });
 
+function isAuthorized(req, res, next) {
+    if (org && org.oauth) {
+        next();
+    }
+    else {
+        return res.status(401).json({ error: 'not authorized' });
+    }
+}
 
 //Salesforce REST api
-router.get('/accounts', (req, res)=>{
-    var q = 'SELECT Id, Name, CreatedDate, BillingCity FROM Account LIMIT 10';
-    org.query({query:q}, function(err, resp){
-        if (!err && resp.records) {
-            var accs = resp.records;
-            return res.status(200).json(accs);
-        } else {
-            return res.status(400).json({error: 'no org data found'});
-        }
-    });
-});
-
-router.get('/orgs',(req, res)=>{
+router.get('/orgs', isAuthorized, (req, res) => {
     var q = 'SELECT Name, Id, Type__c FROM Org__c LIMIT 10';
-    org.query({query:q}, function(err, resp){
+    org.query({ query: q }, function (err, resp) {
         if (!err && resp.records) {
             var orgs = resp.records;
             return res.status(200).json(orgs);
         } else {
-            return res.status(400).json({error: 'no org data found'});
+            return res.status(400).json({ error: 'no org data found' });
         }
     });
 });
