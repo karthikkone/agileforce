@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const config = require('../config/config');
 const nforce = require('nforce');
+//load nforce meta-data plugin
+require('nforce-metadata')(nforce);
+
 const authHelper = require('../services/authHelper');
 
 let sfClientId = config.salesforce.clientId;
@@ -12,7 +15,8 @@ const org = nforce.createConnection({
     clientId: sfClientId,
     clientSecret: sfClientSecret,
     redirectUri: sfRedirectUri,
-    mode: 'single' //cache oauth in connection object
+    mode: 'single', //cache oauth in connection object
+    plugins: ['meta'] //load the plugin in this connection
 });
 
 //authentication
@@ -51,8 +55,22 @@ router.get('/orgs', isAuthorized, (req, res) => {
             var orgs = resp.records;
             return res.status(200).json(orgs);
         } else {
-            return res.status(400).json({ error: 'no org data found' });
+            return res.status(404).json({ error: 'no org data found' });
         }
     });
+});
+
+router.get('/meta',isAuthorized,(req, res)=> {
+    org.meta.listMetaData({
+        queries:[
+            {type: 'ApexClass'},
+            {type: 'CustomObject'}
+        ]
+    }).then(function(md){
+        return res.status(200).json(md);
+    }).error(function(err) {
+        return res.status(500).json({error: 'something went wrong fetching meta data'});
+    });
+
 });
 module.exports = router;
