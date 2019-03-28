@@ -20,14 +20,13 @@ router.get('/callback',(req, res)=>{
     
     org.authenticate({code: req.query.code}, function(err, response){
         if (!err) {
-            console.log('could not be authorized by Salesforce ', err);
+            console.log('authorized by Salesforce');
             return res.status(200).json({message:'authorization succeded'});
         } else {
-            console.log('authorized by salesforce');
+            console.log('could not be authorized by Salesforce ', err);
             return res.status(401).json({error: 'authorization failed'});
         }
     });
-    console.log('response 5 ',res);
 });
 
 router.get('/oauth', function (req, res) {
