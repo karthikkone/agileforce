@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const config = require('../config/config');
 const nforce = require('nforce');
+const fs = require('fs');
+const path = require('path');
 //load nforce meta-data plugin
 require('nforce-metadata')(nforce);
 
@@ -72,6 +74,40 @@ router.get('/meta',isAuthorized,(req, res)=> {
         return res.status(500).json({error: 'something went wrong fetching meta data'});
     });
 
+});
+
+router.get('/retrieve', isAuthorized, (req, res) =>{
+
+    var retrievePromise = org.meta.retrieveAndPoll({
+        apiVersion: '45.0',
+        unpackaged: {
+            version: '45.0',
+            types: [
+                {
+                name: 'CustomObject',
+                members: ['*']
+                }
+            ]
+        }
+    });
+
+    retrievePromise.poller.on('poll', (pollRes) => {console.log('poll status: ',pollRes)});
+    
+    retrievePromise.then(function(retResp){
+        console.log('retrieval: ',retResp.status);
+        console.log('saving retrival as zip file ..');
+        var zipfileName = 'nforce-meta-retrieval-'+retResp.id+'.zip';
+        var metaZipfile = path.join('..','public','workspace',zipfileName);
+        var buf = new Buffer(res.zipfile, 'base64');
+        fs.writeFile(metaZipfile, buf, 'binary', function(err){
+            if (err) throw err
+        });
+        console.log('zip file saved');
+    }).error(function (err){
+        console.error(err);
+        return res.status(500).json({error: 'failed to fetch and save metadata'})
+    });
+    return res.status(200).json({message: "metadata retrieved successfully"});
 });
 
 module.exports = router;
