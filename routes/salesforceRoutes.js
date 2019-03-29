@@ -18,7 +18,10 @@ const org = nforce.createConnection({
     clientSecret: sfClientSecret,
     redirectUri: sfRedirectUri,
     mode: 'single', //cache oauth in connection object
-    plugins: ['meta'] //load the plugin in this connection
+    plugins: ['meta'], //load the plugin in this connection
+    metaOpts: {
+    pollInterval: 1000
+    }
 });
 
 //authentication
@@ -92,7 +95,7 @@ router.get('/retrieve', isAuthorized, (req, res) =>{
     });
 
     retrievePromise.poller.on('poll', (pollRes) => {console.log('poll status: ',pollRes)});
-    
+
     retrievePromise.then(function(retResp){
         console.log('retrieval: ',retResp.status);
         console.log('saving retrival as zip file ..');
