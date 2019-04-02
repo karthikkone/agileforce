@@ -98,10 +98,10 @@ router.get('/retrieve', isAuthorized, (req, res) =>{
 
     retrievePromise.then(function(retResp){
         console.log('retrieval: ',retResp.status);
-        console.log('saving retrival as zip file ..');
+        console.log('saving retrieval as zip file ..');
         var zipfileName = 'nforce-meta-retrieval-'+retResp.id+'.zip';
         var metaZipfile = path.join('..','public','workspace',zipfileName);
-        var buf = new Buffer(retResp.zipfile, 'base64');
+        var buf = Buffer.from(retResp.zipfile, 'base64');
         fs.writeFile(metaZipfile, buf, 'binary', function(err){
             if (err) throw err
         });
