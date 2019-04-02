@@ -94,7 +94,10 @@ router.get('/retrieve', isAuthorized, (req, res) =>{
         }
     });
 
-    retrievePromise.poller.on('poll', (pollRes) => {console.log('poll status: ',pollRes)});
+    retrievePromise.poller.on('poll', (pollRes) => {
+        console.log('poll status: ',pollRes);
+        return retrievePromise;
+    });
 
     retrievePromise.then(function(retResp){
         console.log('retrieval: ',retResp.status);
