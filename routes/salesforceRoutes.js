@@ -4,6 +4,7 @@ const config = require('../config/config');
 const nforce = require('nforce');
 const fs = require('fs');
 const path = require('path');
+const metahelper = require('../services/salesforceMeta');
 //load nforce meta-data plugin
 require('nforce-metadata')(nforce);
 
@@ -80,26 +81,7 @@ router.get('/meta',isAuthorized,(req, res)=> {
 });
 
 router.get('/retrieve', isAuthorized, (req, res) =>{
-
-    var retrievePromise = org.meta.retrieveAndPoll({
-        apiVersion: '45.0',
-        unpackaged: {
-            version: '45.0',
-            types: [
-                {
-                name: 'CustomObject',
-                members: ['*']
-                }
-            ]
-        }
-    });
-
-    retrievePromise.poller.on('poll', (pollRes) => {
-        console.log('poll status: ',pollRes);
-        return retrievePromise;
-    });
-
-    retrievePromise.then(function(retResp){
+ metahelper.retreiveAndPoll(org).then(function(retResp){
         console.log('retrieval: ',retResp.status);
         console.log('saving retrieval as zip file ..');
         var zipfileName = 'nforce-meta-retrieval-'+retResp.id+'.zip';
@@ -115,5 +97,6 @@ router.get('/retrieve', isAuthorized, (req, res) =>{
     });
     return res.status(200).json({message: "metadata retrieved successfully"});
 });
+
 
 module.exports = router;
