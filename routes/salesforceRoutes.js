@@ -21,7 +21,7 @@ const org = nforce.createConnection({
     mode: 'single', //cache oauth in connection object
     plugins: ['meta'], //load the plugin in this connection
     metaOpts: {
-    pollInterval: 1000
+        pollInterval: 1000
     }
 });
 
@@ -66,36 +66,36 @@ router.get('/orgs', isAuthorized, (req, res) => {
     });
 });
 
-router.get('/meta',isAuthorized,(req, res)=> {
+router.get('/meta', isAuthorized, (req, res) => {
     org.meta.listMetadata({
-        queries:[
-            {type: 'ApexClass'},
-            {type: 'CustomObject'}
+        queries: [
+            { type: 'ApexClass' },
+            { type: 'CustomObject' }
         ]
-    }).then(function(md){
+    }).then(function (md) {
         return res.status(200).json(md);
-    }).error(function(err) {
-        return res.status(500).json({error: 'something went wrong fetching meta data'});
+    }).error(function (err) {
+        return res.status(500).json({ error: 'something went wrong fetching meta data' });
     });
 
 });
 
-router.get('/retrieve', isAuthorized, (req, res) =>{
- metahelper.retreiveAndPoll(org).then(function(retResp){
-        console.log('retrieval: ',retResp.status);
-        console.log('saving retrieval as zip file ..');
-        var zipfileName = 'nforce-meta-retrieval-'+retResp.id+'.zip';
-        var metaZipfile = path.join('..','public','workspace',zipfileName);
+router.get('/retrieve', isAuthorized, (req, res) => {
+    metahelper.retreiveAndPoll(org).then(function (retResp) {
+        var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
+        var metaZipfile = path.join('..', 'public', 'workspace', zipfileName);
+        console.log('retrieval: ', retResp.status);
+        console.log('saving retrieval to zip file ', metaZipfile);
         var buf = Buffer.from(retResp.zipfile, 'base64');
-        fs.writeFile(metaZipfile, buf, 'binary', function(err){
+        fs.writeFile(metaZipfile, buf, 'binary', function (err) {
             if (err) throw err
         });
         console.log('zip file saved');
-    }).error(function (err){
+    }).error(function (err) {
         console.error(err);
-        return res.status(500).json({error: 'failed to fetch and save metadata'})
+        return res.status(500).json({ error: 'failed to fetch and save metadata' })
     });
-    return res.status(200).json({message: "metadata retrieved successfully"});
+    return res.status(200).json({ message: "metadata retrieved successfully" });
 });
 
 
