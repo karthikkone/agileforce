@@ -86,6 +86,7 @@ router.get('/retrieve', isAuthorized, (req, res) => {
         var metaZipfile = path.join('..', 'public', 'workspace', zipfileName);
         console.log('retrieval: ', retResp.status);
         console.log('saving retrieval to zip file ', metaZipfile);
+        console.log('type of zipfile binary retrieved ',typeof(retResp.zipfile));
         var buf = Buffer.from(retResp.zipfile, 'base64');
         fs.writeFile(metaZipfile, buf, 'binary', function (err) {
             if (err) throw err
