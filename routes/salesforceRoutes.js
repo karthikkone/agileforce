@@ -13,6 +13,7 @@ const authHelper = require('../services/authHelper');
 let sfClientId = config.salesforce.clientId;
 let sfClientSecret = config.salesforce.clientSecret;
 let sfRedirectUri = config.salesforce.callBackUri;
+let appWorkpaceRoot = config.app.workspaceRoot;
 
 const org = nforce.createConnection({
     clientId: sfClientId,
@@ -83,10 +84,10 @@ router.get('/meta', isAuthorized, (req, res) => {
 router.get('/retrieve', isAuthorized, (req, res) => {
     metahelper.retreiveAndPoll(org).then(function (retResp) {
         var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
-        var metaZipfile = path.join('..', 'public', 'workspace', zipfileName);
+        var metaZipfile = path.join(appWorkpaceRoot, zipfileName);
         console.log('retrieval: ', retResp.status);
         console.log('saving retrieval to zip file ', metaZipfile);
-        console.log('type of zipfile binary retrieved ',typeof(retResp.zipfile));
+        console.log('type of zipfile binary retrieved ',typeof(retResp.zipFile));
         var buf = Buffer.from(retResp.zipFile, 'base64');
         fs.writeFile(metaZipfile, buf, 'binary', function (err) {
             if (err) throw err
