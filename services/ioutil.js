@@ -25,7 +25,7 @@ module.exports = {
                 fs.readFile(zipfileLocation, (err,data) => {
                     if (!err) {
                         console.log(`file at ${zipfileLocation} read succesfully`);
-                        resolve(Buffer.from(data,encformat).toString());
+                        resolve(Buffer.from(data,'binary').toString(encformat));
                     } else {
                         console.log(`failed to read file at ${zipfileLocation}`);
                         reject(err);
