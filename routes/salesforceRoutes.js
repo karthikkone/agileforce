@@ -133,7 +133,8 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
                 return dataManager.getOrg(targetOrgName, 'production');
             })
             .then((targetOrg) => {
-                targetOrgConn.authenticate({ username: targetOrg.username__c, password: targetOrg.password__c },
+                targetOrgConn.authenticate(
+                    { username: targetOrg.username__c, password: targetOrg.password__c, securityToken: targetOrg.token__c},
                     (authErr, authResp) => {
                         if (!authErr) {
                             return targetOrgConn;

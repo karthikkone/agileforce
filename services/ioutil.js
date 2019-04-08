@@ -22,7 +22,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (zipfileLocation) {
                 var zip;
-                fs.readFile(zipfileLocation,'base64', (err,data) => {
+                fs.readFile(zipfileLocation, encformat, (err,data) => {
                     if (!err) {
                         console.log(`file at ${zipfileLocation} read succesfully`);
                         resolve(data);

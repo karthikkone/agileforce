@@ -3,7 +3,7 @@ module.exports = function(org) {
     var module = {};
     module.getOrg=function(name,type='target') {
         return new Promise((resolve,reject) => {
-            var q = `SELECT Id, Name, Type__c, password__c, username__c FROM Org__c WHERE Name='${name}' AND Type__c='${type}' LIMIT 5`;
+            var q = `SELECT Id, Name, Type__c, password__c, username__c, token__c FROM Org__c WHERE Name='${name}' AND Type__c='${type}' LIMIT 5`;
             
             if (org && org.oauth) {
                 org.query({query: q},(err, resp)=>{
