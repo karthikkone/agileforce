@@ -140,10 +140,10 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
                 );
             })
             .then((targetOrgConn) => {
-                return { metaZip: zipUtil.readZipFrom(retrievedZipfile, 'base64'), targetOrgConn: targetOrgConn };
+               return zipUtil.readZipFrom(retrievedZipfile, 'base64');
             })
-            .then((data) => {
-                return metahelper.validateAndPoll(data.targetOrgConn, data.metaZip);
+            .then((metaZipBase64) => {
+                return metahelper.validateAndPoll(targetOrgConn,metaZipBase64);
             })
             .then((validateResp) => {
                 console.log('validation status : ', validateResp.status);
