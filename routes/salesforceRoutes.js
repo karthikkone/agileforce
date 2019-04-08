@@ -9,7 +9,6 @@ const zipUtil = require('../services/ioutil');
 //load nforce meta-data plugin
 require('nforce-metadata')(nforce);
 
-const authHelper = require('../services/authHelper');
 
 let sfClientId = config.salesforce.clientId;
 let sfClientSecret = config.salesforce.clientSecret;
