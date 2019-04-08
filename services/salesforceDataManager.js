@@ -8,7 +8,7 @@ module.exports = function(org) {
             if (org && org.oauth) {
                 org.query({query: q},(err, resp)=>{
                     if (!err && resp.records) {
-                        resolve(records[0]);
+                        resolve(resp.records[0]);
                     } else {
                         reject(new Error(`no org found with name=${name},type=${type}`));
                     }
