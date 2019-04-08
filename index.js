@@ -2,7 +2,7 @@ const request = require('request');
 const fs = require('fs');
 const express = require('express');
 const config = require('./config/config');
-
+const bodyParser = require('body-parser');
 //routes
 const salesforceRoutes = require('./routes/salesforceRoutes');
 
@@ -15,6 +15,13 @@ const port = config.app.port;
 
 //static content
 app.use(express.static('public'));
+
+//add support for json & url encoded bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 //home
 app.get('/',(request, response) => {
     response.send('hello from express');

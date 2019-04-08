@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const metahelper = require('../services/salesforceMeta');
 const zipUtil = require('../services/ioutil');
+
 //load nforce meta-data plugin
 require('nforce-metadata')(nforce);
 
@@ -102,8 +103,9 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 });
 
 router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
-    var targetOrgName = req.params.targetOrgName;
+    var targetOrgName = req.body.targetOrgName;
     var retrievedZipfile;
+
     var targetOrgConn = nforce.createConnection({
         clientId: sfClientId,
         clientSecret: sfClientSecret,
@@ -117,6 +119,7 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
 
     //authenticate target salesforce org
     //targetOrgConn.authenticate({username:})
+    console.log('targetOrg in request ',targetOrgName);
     if (targetOrgName) {
         metahelper.retreiveAndPoll(org)
             .then((retResp) => {
