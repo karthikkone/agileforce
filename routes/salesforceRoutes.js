@@ -133,7 +133,6 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
                 return dataManager.getOrg(targetOrgName, 'production');
             })
             .then((targetOrg) => {
-                console.log('targetOrg: ',targetOrg);
                 return authManager.authenticateSingleModeOrg(targetOrgConn, 
                     targetOrg.get('username__c'),
                     targetOrg.get('password__c'),
