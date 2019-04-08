@@ -19,4 +19,5 @@ module.exports = function(org) {
             }
         });
     }
+    return module;
 }
