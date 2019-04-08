@@ -123,7 +123,7 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
     if (targetOrgName) {
         metahelper.retreiveAndPoll(org)
             .then((retResp) => {
-                var zipfileName = 'nforce-meta-retrieval-' + restResp.id + '.zip';
+                var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
                 var metaZipLocation = path.join(appWorkpaceRoot, zipfileName);
 
                 return zipUtil.createZipFrom(retResp.zipFile, metaZipLocation);
