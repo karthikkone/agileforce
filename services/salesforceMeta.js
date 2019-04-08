@@ -27,7 +27,7 @@ module.exports = {
         });
 
         validatePromise.poller.on('poll', (pollRes) => {console.log('validate poll status: ',pollRes);})
-        validatePromise.poller.on('done', (pollres) => {console.log('validate complete: ',pollRes);})
+        validatePromise.poller.on('done', (pollRes) => {console.log('validate complete: ',pollRes);})
         return validatePromise;
     }
 }
