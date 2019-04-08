@@ -136,7 +136,7 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
                 return authManager.authenticateSingleModeOrg(targetOrgConn, 
                     targetOrg.username__c,
                     targetOrg.password__c,
-                    targetOrg.securityToken
+                    targetOrg.token__c,
                 );
             })
             .then((targetOrgConn) => {
