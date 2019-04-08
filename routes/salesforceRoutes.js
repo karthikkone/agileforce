@@ -5,6 +5,7 @@ const nforce = require('nforce');
 const fs = require('fs');
 const path = require('path');
 const metahelper = require('../services/salesforceMeta');
+const zipUtil = require('../services/ioutil');
 //load nforce meta-data plugin
 require('nforce-metadata')(nforce);
 
@@ -26,6 +27,7 @@ const org = nforce.createConnection({
     }
 });
 
+const dataManager = require('../services/salesforceDataManager')(org);
 //authentication
 router.get('/callback', (req, res) => {
 
@@ -87,7 +89,7 @@ router.get('/retrieve', isAuthorized, (req, res) => {
         var metaZipfile = path.join(appWorkpaceRoot, zipfileName);
         console.log('retrieval: ', retResp.status);
         console.log('saving retrieval to zip file ', metaZipfile);
-        console.log('type of zipfile binary retrieved ',typeof(retResp.zipFile));
+        console.log('type of zipfile binary retrieved ', typeof (retResp.zipFile));
         var buf = Buffer.from(retResp.zipFile, 'base64');
         fs.writeFile(metaZipfile, buf, 'binary', function (err) {
             if (err) throw err
@@ -100,5 +102,62 @@ router.get('/retrieve', isAuthorized, (req, res) => {
     return res.status(200).json({ message: "metadata retrieved successfully" });
 });
 
+router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
+    var targetOrgName = req.params.targetOrgName;
+    var retrievedZipfile;
+    var targetOrgConn = nforce.createConnection({
+        clientId: sfClientId,
+        clientSecret: sfClientSecret,
+        redirectUri: sfRedirectUri,
+        mode: 'single', //cache oauth in connection object
+        plugins: ['meta'], //load the plugin in this connection
+        metaOpts: {
+            pollInterval: 1000
+        }
+    });
+
+    //authenticate target salesforce org
+    //targetOrgConn.authenticate({username:})
+    if (targetOrgName) {
+        metahelper.retreiveAndPoll(org)
+            .then((retResp) => {
+                var zipfileName = 'nforce-meta-retrieval-' + restResp.id + '.zip';
+                var metaZipLocation = path.join(appWorkpaceRoot, zipfileName);
+
+                return zipUtil.createZipFrom(retResp.zipFile, metaZipLocation);
+            })
+            .then((savedZipFilePath) => {
+                retrievedZipfile = savedZipFilePath;
+                return dataManager.getOrg(targetOrgName, 'production');
+            })
+            .then((targetOrg) => {
+                targetOrgConn.authenticate({ username: targetOrg.username__c, password: password__c },
+                    (authErr, authResp) => {
+                        if (!authErr) {
+                            return targetOrgConn;
+                        } else throw new Error("Target Org authentication failed", authErr.message);
+                    })
+            })
+            .then((targetOrgConn) => {
+                return { metaZip: zipUtil.readZipFrom(retrievedZipfile, 'base64'), targetOrgConn: targetOrgConn };
+            })
+            .then((data) => {
+                return metahelper.validateAndPoll(data.targetOrgConn, data.metaZip);
+            })
+            .then((validateResp) => {
+                console.log('validation status : ', validateResp.status);
+                return validateResp;
+            })
+            .catch((err) => {
+                console.log('retrieveAndValidate operation failed with error : ' + err.message);
+                console.error(err);
+            });
+
+        return res.status(202).json({ message: 'operation queued' });
+    } else {
+        //missing required params
+        return res.status(406).json({ error: 'missing param targetOrgName' });
+    }
+});
 
 module.exports = router;
