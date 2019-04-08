@@ -13,7 +13,7 @@ module.exports = {
                     }
                 );
             } else {
-                reject(new Error('org, username, password or securityToken missing'));
+                reject(new Error(`org: ${org}, username, password or securityToken missing`));
             }
         });
     }
