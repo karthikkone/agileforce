@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const metahelper = require('../services/salesforceMeta');
 const zipUtil = require('../services/ioutil');
-
+const authManager = require('../services/authManager');
 //load nforce meta-data plugin
 require('nforce-metadata')(nforce);
 
@@ -133,13 +133,11 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
                 return dataManager.getOrg(targetOrgName, 'production');
             })
             .then((targetOrg) => {
-                targetOrgConn.authenticate(
-                    { username: targetOrg.username__c, password: targetOrg.password__c, securityToken: targetOrg.token__c},
-                    (authErr, authResp) => {
-                        if (!authErr) {
-                            return targetOrgConn;
-                        } else throw new Error("Target Org authentication failed", authErr.message);
-                    })
+                return authManager.authenticateSingleModeOrg(targetOrgConn, 
+                    targetOrg.username__c,
+                    targetOrg.password__c,
+                    targetOrg.securityToken
+                );
             })
             .then((targetOrgConn) => {
                 return { metaZip: zipUtil.readZipFrom(retrievedZipfile, 'base64'), targetOrgConn: targetOrgConn };
