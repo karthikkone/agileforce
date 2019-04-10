@@ -1,15 +1,18 @@
 const express = require('express');
-const router = express.Router();
-const config = require('../config/config');
+
+const config = require('../config');
 const nforce = require('nforce');
 const fs = require('fs');
 const path = require('path');
-const metahelper = require('../services/salesforceMeta');
-const zipUtil = require('../services/ioutil');
-const authManager = require('../services/authManager');
+const salesforce = require('../salesforce');
+const zipUtil = require('../utils').zipUtil;
+const authManager = require('../salesforce').auth;
 //load nforce meta-data plugin
 require('nforce-metadata')(nforce);
 
+//constants
+const metahelper = salesforce.meta;
+const router = express.Router();
 
 let sfClientId = config.salesforce.clientId;
 let sfClientSecret = config.salesforce.clientSecret;
@@ -27,7 +30,7 @@ const org = nforce.createConnection({
     }
 });
 
-const dataManager = require('../services/salesforceDataManager')(org);
+const dataManager = salesforce.rest(org);
 //authentication
 router.get('/callback', (req, res) => {
 

@@ -6,9 +6,6 @@ const bodyParser = require('body-parser');
 //routes
 const salesforceRoutes = require('./routes/salesforceRoutes');
 
-//middlewares
-const requestLogger = require('./middlewares/requestLogger');
-const authFilter = require('./middlewares/authfilter');
 
 const app = express();
 const port = config.app.port;
@@ -42,5 +39,5 @@ app.listen(port, (err)=> {
 process.on('uncaughtException', (error)=>{
     console.log(error);
     console.log('shutting down application ...');
-    process.exit(1)
+    process.exit(1);
 });

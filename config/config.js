@@ -1,10 +1,21 @@
-const env = process.env.NODE_ENV; //'production' or 'test'
+//required environment variables
+['NODE_ENV',
+'PORT'].forEach((name) => {
+    if (!process.env[name]) {
+        throw new Error(`missing required environment variable ${name}`)
+    }
+});
 
+const env = process.env.NODE_ENV; //'production' or 'test'
 console.log(`loading env : ${env}`);
+
 const production = {
     app: {
         port: parseInt(process.env.PORT) || 8080,
-        workspaceRoot: process.env.APP_WORKSPACE_ROOT || 'tmp'
+        workspaceRoot: process.env.APP_WORKSPACE_ROOT || 'tmp',
+        db: {
+            name: process.env.APP_DB_NAME || 'app-db.json'
+        }
     },
     salesforce: {
         clientId: process.env.SF_OAUTH_CLIENT_ID ||  'SALESFORCE_OAUTH_APP_CLIENT_ID_DEV',
@@ -16,7 +27,10 @@ const production = {
 const test = {
     app: {
         port: parseInt(process.env.PORT) || 8080,
-        workspaceRoot: process.env.APP_WORKSPACE_ROOT || 'tmp'
+        workspaceRoot: process.env.APP_WORKSPACE_ROOT || 'tmp',
+        db: {
+            name: process.env.APP_DB_NAME || 'app-test-db.json'
+        }
     },
     salesforce: {
         clientId: process.env.SF_OAUTH_CLIENT_ID || 'SALESFORCE_OAUTH_APP_CLIENT_ID_TEST',

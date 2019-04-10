@@ -5,9 +5,10 @@ logs
 npm-debug.log*
 .npm
 .eslintcache
+.eslintrc.*
 .env
 .DS_Store
-
+.vscode
 #should be checked in ?
 #skip only to avoid merge conflicts
 package-lock.json
