@@ -30,7 +30,7 @@ module.exports = {
         return validatePromise;
     },
 
-    validateTestAndPoll: function validateTestAndPoll(org,metaZipFile,checkOnly="true",testlevel="RunSpecifiedTests",tests) {
+    validateTestAndPoll: function validateTestAndPoll(org,metaZipFile,tests,checkOnly="true",testlevel="RunSpecifiedTests") {
         var validatePromise = org.meta.deployAndPoll({
             zipFile: metaZipFile,
             deployOptions: {
