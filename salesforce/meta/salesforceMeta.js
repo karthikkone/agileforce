@@ -3,7 +3,13 @@ module.exports = {
     retreiveAndPoll: function retrieveAndPoll(org, retrieveOptions) {
         var retrievePromise = org.meta.retrieveAndPoll({
             apiVersion: '45.0',
-            retrieveOptions,
+            unpackaged: {
+                version: '45.0',
+                types: [
+                    {name: 'CustomObject', members: ['*']},
+                    {name: 'ApexClass', members: ['MyFooController','MyFooControllerTest']}
+                ]
+            }
         });
 
         retrievePromise.poller.on('poll', (pollRes) => { console.log('retrieve poll status: ', pollRes); })
