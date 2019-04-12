@@ -20,7 +20,8 @@ module.exports = {
         var validatePromise = org.meta.deployAndPoll({
             zipFile: metaZipFile,
             deployOptions: {
-                checkOnly : checkOnly
+                checkOnly : checkOnly,
+                runTests: ['MyFooControllerTest']
             }
         });
 
