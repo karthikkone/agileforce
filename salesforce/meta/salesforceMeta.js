@@ -21,7 +21,7 @@ module.exports = {
             zipFile: metaZipFile,
             deployOptions: {
                 checkOnly : checkOnly,
-                runTests: ['MyFooControllerTest']
+                //runTests: ['MyFooControllerTest']
             }
         });
 
