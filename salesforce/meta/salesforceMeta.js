@@ -1,17 +1,9 @@
 module.exports = {
 
-    retreiveAndPoll: function retrieveAndPoll(org) {
+    retreiveAndPoll: function retrieveAndPoll(org, retrieveOptions) {
         var retrievePromise = org.meta.retrieveAndPoll({
             apiVersion: '45.0',
-            unpackaged: {
-                version: '45.0',
-                types: [
-                    {
-                        name: 'CustomObject',
-                        members: ['*']
-                    }
-                ]
-            }
+            retrieveOptions,
         });
 
         retrievePromise.poller.on('poll', (pollRes) => { console.log('retrieve poll status: ', pollRes); })

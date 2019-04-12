@@ -108,7 +108,7 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
     var targetOrgName = req.body.targetOrgName;
     var retrievedZipfile;
-
+    var retrieveOpts = req.body.retrieveOpts;
     var targetOrgConn = nforce.createConnection({
         clientId: sfClientId,
         clientSecret: sfClientSecret,
@@ -124,7 +124,7 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
     //targetOrgConn.authenticate({username:})
     console.log('targetOrg in request ',targetOrgName);
     if (targetOrgName) {
-        metahelper.retreiveAndPoll(org)
+        metahelper.retreiveAndPoll(org,retrieveOpts)
             .then((retResp) => {
                 var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
                 var metaZipLocation = path.join(appWorkpaceRoot, zipfileName);
