@@ -166,4 +166,67 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
     }
 });
 
+router.post('/retrieveTestAndValidate', isAuthorized, (req, res) => {
+    var targetOrgName = req.body.targetOrgName;
+    var retrievedZipfile;
+    var retrieveOpts = req.body.retrieveOpts;
+    var specificTests =req.body.runTests;
+    console.log('retreive options: ', retrieveOpts);
+    console.log(`tests to run ${specificTests}`);
+    
+    var targetOrgConn = nforce.createConnection({
+        clientId: sfClientId,
+        clientSecret: sfClientSecret,
+        redirectUri: sfRedirectUri,
+        mode: 'single', //cache oauth in connection object
+        plugins: ['meta'], //load the plugin in this connection
+        metaOpts: {
+            pollInterval: 1000
+        }
+    });
+
+    //authenticate target salesforce org
+    //targetOrgConn.authenticate({username:})
+    console.log('targetOrg in request ',targetOrgName);
+    if (targetOrgName) {
+        metahelper.retreiveAndPoll(org,retrieveOpts)
+            .then((retResp) => {
+                var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
+                var metaZipLocation = path.join(appWorkpaceRoot, zipfileName);
+
+                return zipUtil.createZipFrom(retResp.zipFile, metaZipLocation);
+            })
+            .then((savedZipFilePath) => {
+                retrievedZipfile = savedZipFilePath;
+                return dataManager.getOrg(targetOrgName, 'production');
+            })
+            .then((targetOrg) => {
+                return authManager.authenticateSingleModeOrg(targetOrgConn, 
+                    targetOrg.get('username__c'),
+                    targetOrg.get('password__c'),
+                    targetOrg.get('token__c')
+                );
+            })
+            .then((targetOrgConn) => {
+               return zipUtil.readZipFrom(retrievedZipfile, 'base64');
+            })
+            .then((metaZipBase64) => {
+                return metahelper.validateTestAndPoll(targetOrgConn,metaZipBase64,tests=specificTests);
+            })
+            .then((validateResp) => {
+                console.log('validation status : ', validateResp.status);
+                return validateResp;
+            })
+            .catch((err) => {
+                console.log('retrieveAndValidate operation failed with error : ' + err.message);
+                console.error(err);
+            });
+
+        return res.status(202).json({ message: 'operation queued' });
+    } else {
+        //missing required params
+        return res.status(406).json({ error: 'missing param targetOrgName' });
+    }
+});
+
 module.exports = router;

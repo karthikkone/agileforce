@@ -28,5 +28,20 @@ module.exports = {
         validatePromise.poller.on('poll', (pollRes) => {console.log('validate poll status: ',pollRes);})
         validatePromise.poller.on('done', (pollRes) => {console.log('validate complete: ',pollRes);})
         return validatePromise;
+    },
+
+    validateTestAndPoll: function validateTestAndPoll(org,metaZipFile,checkOnly="true",testlevel="RunSpecifiedTests",tests) {
+        var validatePromise = org.meta.deployAndPoll({
+            zipFile: metaZipFile,
+            deployOptions: {
+                checkOnly : checkOnly,
+                testLevel: testlevel,
+                runTests: tests
+            }
+        });
+
+        validatePromise.poller.on('poll', (pollRes) => {console.log('validate poll status: ',pollRes);})
+        validatePromise.poller.on('done', (pollRes) => {console.log('validate complete: ',pollRes);})
+        return validatePromise;
     }
 }
