@@ -4,7 +4,7 @@
   "description": "agileforce uses salesforce MetaData & REST API to provide CI/CD",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
@@ -20,5 +20,8 @@
     "lokijs": "^1.5.6",
     "nforce": "1.10.2",
     "nforce-metadata": "^1.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^6.1.3"
   }
 }
