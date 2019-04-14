@@ -1,5 +1,9 @@
-const buildRequestSchema = require('./buildRequestSchema');
+const buildschemas = require('./buildRequestSchema');
 
 module.exports = {
-    buildRequestSchema: buildRequestSchema,
+    targetSchema: buildschemas.targetSchema,
+    componentSchema : buildschemas.componentSchema,
+    sourceSchema: buildschemas.sourceSchema,
+    testSchema: buildschemas.testSchema,
+    buildSchema: buildschemas.buildSchema,
 };

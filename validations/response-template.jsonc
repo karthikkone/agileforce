@@ -1,0 +1,39 @@
+{
+    "source": {
+        "org": {
+            "orgId": "ORG-000"
+        },
+            //either of 2
+        "git": {
+            "gitId": "GIT-000",
+            "repository": "https://github.com/repo",
+            "branch": "master"
+        }
+    },
+
+    "target": { //required
+        "org": { //required
+            "orgId": "ORG-TARGET" //required
+        }
+    },
+
+    "task": "deploy| validate | retrieve", //required
+
+    "components": { //required
+        "package": "", //optional
+        "types": [
+            {"name": "ApexClass", "members": ["*"]},
+        ],
+
+        "exclusions": [ //optional
+            {"name": "ApexClass", "members": ["SomeClass"]},
+        ]
+    },
+
+    "tests": { //required
+        "testLevel": "local | all | specified | skipTests",
+        "specifiedTests": [], //optional required only when testlevel specified
+    },
+
+    "rollbackOnError": "true | false"
+}
