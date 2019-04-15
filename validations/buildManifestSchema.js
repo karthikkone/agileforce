@@ -1,5 +1,20 @@
 const joi = require('joi');
 
+const testLevels = {
+    LOCAL: 'RunLocalTests',
+    ALL: 'RunAllTestsInOrg',
+    SPECIFIED: 'RunSpecifiedTests',
+    SKIPTESTS: 'NoTestRun'
+}
+
+const tasks = {
+    RETRIEVE: 'retrieve',
+    DEPLOY: 'deploy',
+    VALIDATE: 'validate',
+    UNDEPLOY: 'undeploy',
+}
+
+//nested schemas
 const gitSchema = joi.object({
     gitId: joi.string().required(),
     repository: joi.string().uri({
@@ -25,23 +40,37 @@ const targetSchema = joi.object({
 
 const typeSchema = joi.object({
     name: joi.string().required(),
-    members: joi.array().items(joi.string()).min(1).required(),
+    members: joi.array().items(joi.string())
+        .min(1)
+        .required(),
 }).required();
 
 const componentSchema = joi.object({
     package: joi.string(),
-    types: joi.array().items(typeSchema).min(1).required(),
+    types: joi.array().items(typeSchema)
+        .min(1)
+        .required(),
     exclusions: joi.array().items(joi.string()),
 }).required();
 
 const testSchema = joi.object({
-            testLevel: joi.string().valid('local', 'all', 'specified', 'skipTests').required(),
-            specifiedTests: joi.array().items(joi.string())
+    testLevel: joi.string().valid(testLevels.LOCAL,
+        testLevels.ALL,
+        testLevels.SPECIFIED,
+        testLevels.SKIPTESTS)
+        .required(),
+
+    specifiedTests: joi.array().items(joi.string())
 }).required();
 
-const tasksSchema = joi.string().valid('retrieve', 'validate','deploy').required();
+const tasksSchema = joi.string().valid(tasks.RETRIEVE,
+    tasks.VALIDATE,
+    tasks.DEPLOY,
+    tasks.UNDEPLOY)
+    .required();
 
-const buildRequestSchema = joi.object({
+//manifest schema used to parse request body
+const buildManifestSchema = joi.object({
     source: sourceSchema,
     target: targetSchema,
     tasks: tasksSchema,
@@ -56,5 +85,8 @@ module.exports = {
     testSchema: testSchema,
     targetSchema: targetSchema,
     typeSchema: typeSchema,
-    buildSchema: buildRequestSchema,
+    buildManifestSchema: buildManifestSchema,
+    manifestTestLevels: testLevels,
+    manifestTasks: tasks,
+
 }
