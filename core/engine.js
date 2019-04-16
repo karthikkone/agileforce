@@ -47,21 +47,8 @@ module.exports = {
     build: function (manifest) {
         let retrieveOptions = _parseRetrieveOptions(manifest);
         let deployOptions = _parseDeployOptions(manifest);
-
+        console.log('core:build: retrieve = ',JSON.stringify(retrieveOptions));
+        console.log('core:build: deploy = ',JSON.stringify(deployOptions));
     },
-
-    parseManifest: function (manifest) {
-        let parsed;
-        if (manifest) {
-            try {
-                joi.validate(manifest, validations.buildManifestSchema.schema)
-                    .then(
-                        (value) => { parsed = value; }
-                    )
-            } catch (error) {
-                throw new Error('invalid manifest : ' + error.message);
-            }
-        }
-    }
 
 }

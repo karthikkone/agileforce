@@ -7,6 +7,10 @@ const path = require('path');
 const salesforce = require('../salesforce');
 const zipUtil = require('../utils').zipUtil;
 const authManager = require('../salesforce').auth;
+const validations = require('../validations');
+const core = require('../core');
+const joi = require('joi');
+
 //load nforce meta-data plugin
 require('nforce-metadata')(nforce);
 
@@ -227,6 +231,26 @@ router.post('/retrieveTestAndValidate', isAuthorized, (req, res) => {
         //missing required params
         return res.status(406).json({ error: 'missing param targetOrgName' });
     }
+});
+
+
+router.post('/build', isAuthorized, (req, res) => {
+    let payload = req.body;
+    
+    if (!payload) {
+        return res.status(406).json({error: 'build manifest is required'});
+    }
+
+    let parsed = joi.validate(payload,validations.buildManifestSchema)
+
+    if (parsed.error){
+        return res.status(406).json({error: `invalid manifest : ${parsed.error.message}`})
+    } else {
+        let buildManifest = parsed.value;
+        core.build(buildManifest);
+        return res.status(201).json({message: 'operation queued'});
+    }
+    
 });
 
 module.exports = router;
