@@ -12,7 +12,7 @@ const core = require('../core');
 const joi = require('joi');
 
 //load nforce meta-data plugin
-require('nforce-metadata')(nforce);
+//require('nforce-metadata')(nforce);
 
 //constants
 const metahelper = salesforce.meta;
@@ -90,6 +90,7 @@ router.get('/meta', isAuthorized, (req, res) => {
 
 });
 
+/*
 router.get('/retrieve', isAuthorized, (req, res) => {
     metahelper.retreiveAndPoll(org).then(function (retResp) {
         var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
@@ -108,6 +109,7 @@ router.get('/retrieve', isAuthorized, (req, res) => {
     });
     return res.status(200).json({ message: "metadata retrieved successfully" });
 });
+
 
 router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
     var targetOrgName = req.body.targetOrgName;
@@ -169,6 +171,7 @@ router.post('/retrieveAndValidate', isAuthorized, (req, res) => {
         return res.status(406).json({ error: 'missing param targetOrgName' });
     }
 });
+
 
 router.post('/retrieveTestAndValidate', isAuthorized, (req, res) => {
     var targetOrgName = req.body.targetOrgName;
@@ -232,7 +235,7 @@ router.post('/retrieveTestAndValidate', isAuthorized, (req, res) => {
         return res.status(406).json({ error: 'missing param targetOrgName' });
     }
 });
-
+*/
 
 router.post('/build', isAuthorized, (req, res) => {
     let payload = req.body;
