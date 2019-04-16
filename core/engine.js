@@ -24,7 +24,7 @@ const org = nforce.createConnection({
     clientId: sfClientId,
     clientSecret: sfClientSecret,
     redirectUri: sfRedirectUri,
-    mode: 'single', //cache oauth in connection object
+    mode: 'multi',
     plugins: ['meta'], //load the plugin in this connection
     metaOpts: {
         pollInterval: 1000
