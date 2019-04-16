@@ -1,28 +1,15 @@
 module.exports = {
 
     retreiveAndPoll: function retrieveAndPoll(org, retrieveOptions) {
-        var retrievePromise = org.meta.retrieveAndPoll({
-            apiVersion: '45.0',
-            unpackaged: {
-                version: '45.0',
-                types: [
-                    {name: 'CustomObject', members: ['*']},
-                    {name: 'ApexClass', members: ['MyFooController','MyFooControllerTest']}
-                ]
-            }
-        });
-
+        var retrievePromise = org.meta.retrieveAndPoll(retrieveOptions);
         retrievePromise.poller.on('poll', (pollRes) => { console.log('retrieve poll status: ', pollRes); })
         return retrievePromise;
     },
 
-    validateAndPoll: function validateAndPoll(org,metaZipFile,checkOnly="true") {
+    validateAndPoll: function validateAndPoll(org,metaZipFile,deployOptions) {
         var validatePromise = org.meta.deployAndPoll({
             zipFile: metaZipFile,
-            deployOptions: {
-                checkOnly : checkOnly,
-                //runTests: ['MyFooControllerTest']
-            }
+            deployOptions: deployOptions,
         });
 
         validatePromise.poller.on('poll', (pollRes) => {console.log('validate poll status: ',pollRes);})
@@ -30,14 +17,10 @@ module.exports = {
         return validatePromise;
     },
 
-    validateTestAndPoll: function validateTestAndPoll(org,metaZipFile,tests,checkOnly="true",testlevel="RunSpecifiedTests") {
+    validateTestAndPoll: function validateTestAndPoll(org,metaZipFile,deployOptions) {
         var validatePromise = org.meta.deployAndPoll({
             zipFile: metaZipFile,
-            deployOptions: {
-                checkOnly : checkOnly,
-                testLevel: testlevel,
-                runTests: tests
-            }
+            deployOptions: deployOptions,
         });
 
         validatePromise.poller.on('poll', (pollRes) => {console.log('validate poll status: ',pollRes);})
