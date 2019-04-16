@@ -10,7 +10,7 @@ const authManager = require('../salesforce').auth;
 const validations = require('../validations');
 const core = require('../core');
 const joi = require('joi');
-
+const security = require('../security');
 //load nforce meta-data plugin
 //require('nforce-metadata')(nforce);
 
@@ -40,7 +40,7 @@ router.get('/callback', (req, res) => {
 
     org.authenticate({ code: req.query.code }, function (err, response) {
         if (!err) {
-            console.log('authorized by Salesforce');
+            var oauth = response;
             return res.status(200).json({ message: 'authorization succeded' });
         } else {
             console.log('could not be authorized by Salesforce ', err);
