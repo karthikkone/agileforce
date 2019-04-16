@@ -244,7 +244,7 @@ router.post('/build', isAuthorized, (req, res) => {
     let parsed = joi.validate(payload,validations.buildManifestSchema)
 
     if (parsed.error){
-        return res.status(406).json({error: `invalid manifest : ${parsed.error.message}`})
+        return res.status(406).json({error: 'invalid manifest: ' + parsed.error.message});
     } else {
         let buildManifest = parsed.value;
         core.build(buildManifest);
