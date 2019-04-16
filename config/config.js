@@ -1,6 +1,7 @@
 //required environment variables
 ['NODE_ENV',
-'PORT'].forEach((name) => {
+'PORT',
+'JWT_SECRET'].forEach((name) => {
     if (!process.env[name]) {
         throw new Error(`missing required environment variable ${name}`)
     }
@@ -21,6 +22,11 @@ const production = {
         clientId: process.env.SF_OAUTH_CLIENT_ID ||  'SALESFORCE_OAUTH_APP_CLIENT_ID_DEV',
         clientSecret: process.env.SF_OAUTH_CLIENT_SECRET || 'SALESFORCE_OAUTH_APP_CLIENT_SECRET_DEV',
         callBackUri : process.env.SF_OAUTH_CALLBACK_URI 
+    },
+    security: {
+        jwt: {
+            secret: process.env.JWT_SECRET,
+        }
     }
 }
 
@@ -36,6 +42,12 @@ const test = {
         clientId: process.env.SF_OAUTH_CLIENT_ID || 'SALESFORCE_OAUTH_APP_CLIENT_ID_TEST',
         clientSecret: process.env.SF_OAUTH_CLIENT_SECRET || 'SALESFORCE_OAUTH_APP_CLIENT_SECRET_TEST',
         callBackUri : process.env.SF_OAUTH_CALLBACK_URI || `localhost:8080/sforce/callback`
+    },
+
+    security: {
+        jwt: {
+            secret: process.env.JWT_SECRET || 'jhdgehi51@.gdyhfatg',
+        }
     }
 }
 
