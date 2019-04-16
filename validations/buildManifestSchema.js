@@ -73,7 +73,7 @@ const tasksSchema = joi.string().valid(tasks.RETRIEVE,
 const buildManifestSchema = joi.object({
     source: sourceSchema,
     target: targetSchema,
-    tasks: tasksSchema,
+    task: tasksSchema,
     components: componentSchema,
     tests: testSchema,
     rollbackOnError: joi.boolean()
