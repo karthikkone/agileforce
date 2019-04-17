@@ -41,23 +41,25 @@ router.get('/callback', (req, res) => {
     org.authenticate({ code: req.query.code }, function (err, response) {
         if (!err) {
             var oauth = response;
-            org.getIdentity({oauth: oauth},(err, idResp)=>{
+            org.getIdentity({ oauth: oauth }, (err, idResp) => {
                 if (!err) {
                     console.log(JSON.stringify(idResp));
                     try {
                         if (!security.auth.isRegisteredUser(idResp.username)) {
-                            security.auth.registerUser(idResp.username,oauth);
-                        } else {
-                            var existingUser = users.findByUsername(idResp.username);
-                            var token = security.access.issue(existingUser);
-                            console.log('token issued ', token)
+                            security.auth.registerUser(idResp.username, oauth);
                         }
-                    } catch(registrationError) {
+                        var existingUser = users.findByUsername(idResp.username);
+                        //set oauth token
+                        existingUser.forceOauth=oauth;
+                        var token = security.access.issue(existingUser);
+                        console.log('token issued ', token)
+
+                    } catch (registrationError) {
                         console.log(registrationError);
-                        return res.status(500).json({error: 'fatal could not register authenticated user'})
+                        return res.status(500).json({ error: 'fatal could not register authenticated user' })
                     }
                 } else {
-                    return res.status(500).json({error: 'failed to get user identity'});
+                    return res.status(500).json({ error: 'failed to get user identity' });
                 }
             });
             return res.status(200).json({ message: 'authorization succeded' });
@@ -258,21 +260,21 @@ router.post('/retrieveTestAndValidate', isAuthorized, (req, res) => {
 
 router.post('/build', isAuthorized, (req, res) => {
     let payload = req.body;
-    
+
     if (!payload) {
-        return res.status(406).json({error: 'build manifest is required'});
+        return res.status(406).json({ error: 'build manifest is required' });
     }
 
-    let parsed = joi.validate(payload,validations.buildManifestSchema)
+    let parsed = joi.validate(payload, validations.buildManifestSchema)
 
-    if (parsed.error){
-        return res.status(406).json({error: 'invalid manifest: ' + parsed.error.message});
+    if (parsed.error) {
+        return res.status(406).json({ error: 'invalid manifest: ' + parsed.error.message });
     } else {
         let buildManifest = parsed.value;
         core.build(buildManifest);
-        return res.status(201).json({message: 'operation queued'});
+        return res.status(201).json({ message: 'operation queued' });
     }
-    
+
 });
 
 module.exports = router;
