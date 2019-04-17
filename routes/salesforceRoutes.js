@@ -28,13 +28,12 @@ const org = nforce.createConnection({
     clientId: sfClientId,
     clientSecret: sfClientSecret,
     redirectUri: sfRedirectUri,
-    mode: 'single', //cache oauth in connection object
+    mode: 'multi', //cache oauth in connection object
     plugins: ['meta'], //load the plugin in this connection
     metaOpts: {
         pollInterval: 1000
     }
 });
-
 const dataManager = salesforce.rest(org);
 //authentication
 router.get('/callback', (req, res) => {
@@ -42,7 +41,13 @@ router.get('/callback', (req, res) => {
     org.authenticate({ code: req.query.code }, function (err, response) {
         if (!err) {
             var oauth = response;
-            console.log('authData : ',JSON.stringify(oauth));
+            org.getIdentity({oauth: oauth},(err, idResp)=>{
+                if (!err) {
+                    console.log(JSON.stringify(idResp));
+                } else {
+                    console.log('could not get identity');
+                }
+            });
             return res.status(200).json({ message: 'authorization succeded' });
         } else {
             console.log('could not be authorized by Salesforce ', err);
