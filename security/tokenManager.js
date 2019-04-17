@@ -8,16 +8,10 @@ function createJWT(userSchema) {
     }
     let u = users.findByUsername(userSchema.username);
     if (!u) {
-        //add user if doesn't exist
-        u = users.addUser(userSchema);
-    } else {
-        //update user
-        users.updateUser(userSchema);
+        throw new Error('User not found');
     }
-
     let token = jwt.sign({id: u.$loki},config.security.jwt.secret);
     return token;
-
 }
 
 function verifyJWT(token) {
