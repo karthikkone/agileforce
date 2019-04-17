@@ -44,8 +44,20 @@ router.get('/callback', (req, res) => {
             org.getIdentity({oauth: oauth},(err, idResp)=>{
                 if (!err) {
                     console.log(JSON.stringify(idResp));
+                    try {
+                        if (!security.auth.isRegisteredUser(idResp.username)) {
+                            security.auth.registerUser(idResp.username,oauth);
+                        } else {
+                            var existingUser = users.findByUsername(idResp.username);
+                            var token = security.access.issue(existingUser);
+                            console.log('token issued ', token)
+                        }
+                    } catch(registrationError) {
+                        console.log(registrationError);
+                        return res.status(500).json({error: 'fatal could not register authenticated user'})
+                    }
                 } else {
-                    console.log('could not get identity');
+                    return res.status(500).json({error: 'failed to get user identity'});
                 }
             });
             return res.status(200).json({ message: 'authorization succeded' });
