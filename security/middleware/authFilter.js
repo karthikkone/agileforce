@@ -1,6 +1,6 @@
 const tokenManager = require('../tokenManager');
 
-module.export=authfilter;
+module.exports=authfilter;
 
 function authfilter(req, res, next) {
     //read Authorization header
