@@ -18,7 +18,7 @@ function addUser(userSchema) {
             orgName: userSchema.orgName,
             forceOauth: userSchema.forceOauth,
         });
-        return newUser.$loki;
+        return newUser;
     }
     catch (err) {
         console.log('failed to add user : ',err.message);
@@ -39,7 +39,14 @@ function updateUser(userSchema) {
         throw new TypeError('UserSchema & UserSchema.username are required');
     }
     try {
-        return _users.update(userSchema);
+        let foundUser = _users.findOne({username: userSchema.username});
+        if (!foundUser) {
+            throw new Error('User not found');
+        } else {
+            foundUser.orgName = userSchema.orgName;
+            foundUser.forceOauth = userSchema.forceOauth;
+            return _users.update(foundUser);
+        }
     } catch(error) {
         console.log('failed to update user: ',error.message);
         return null;
