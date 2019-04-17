@@ -1,2 +1,7 @@
-const security = require('./tokenManager');
-module.exports = security
+const accessTokens = require('./tokenManager');
+const userRegistry = require('./userRegistry');
+
+module.exports = {
+    access: accessTokens,
+    auth: userRegistry,
+}
