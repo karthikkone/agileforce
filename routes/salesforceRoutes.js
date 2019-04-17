@@ -51,6 +51,8 @@ router.get('/callback', (req, res) => {
                         var existingUser = users.findByUsername(idResp.username);
                         //set oauth token
                         existingUser.forceOauth=oauth;
+                        users.updateUser(existingUser);
+                        
                         var token = security.access.issue(existingUser);
                         console.log('token issued ', token)
 

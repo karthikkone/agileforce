@@ -15,13 +15,17 @@ function createJWT(userSchema) {
 }
 
 function verifyJWT(token) {
+    let verfiedUser;
     try {
         let decoded = jwt.verify(token,config.security.jwt.secret);
         let userId = decoded.id;
-        return users.findById(userId);
+        verfiedUser = users.findById(userId);
     } catch(err) {
         throw new Error(err);
     }
+
+    if (!verfiedUser) throw new Error('user in request or token is invalid');
+    else return verfiedUser;
 }
 
 

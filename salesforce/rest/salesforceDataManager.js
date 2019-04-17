@@ -1,12 +1,16 @@
 //org is nforce connection object
 module.exports = function(org) {
     var module = {};
-    module.getOrg=function(name,type='target') {
+    module.getOrg = function(name,type='target',oauth=null) {
         return new Promise((resolve,reject) => {
-            var q = `SELECT Id, Name, Type__c, password__c, username__c, token__c FROM Org__c WHERE Name='${name}' AND Type__c='${type}' LIMIT 5`;
-            
-            if (org && org.oauth) {
-                org.query({query: q},(err, resp)=>{
+            let q = `SELECT Id, Name, Type__c, password__c, username__c, token__c FROM Org__c WHERE Name='${name}' AND Type__c='${type}' LIMIT 5`;
+            let queryOptions = {query: q};
+
+            if (org) {
+                if (org.mode == 'multi') {
+                    queryOptions.oauth = oauth;
+                }
+                org.query(queryOptions,(err, resp)=>{
                     if (!err && resp.records) {
                         resolve(resp.records[0]);
                     } else {
@@ -19,5 +23,12 @@ module.exports = function(org) {
             }
         });
     }
+
+    module.addRemoteAuth = function(userSchema,token,oauth=null) {
+        return new Promise((resolve,reject)=>{
+
+        });
+    }
+
     return module;
 }
