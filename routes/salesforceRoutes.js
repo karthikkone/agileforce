@@ -258,9 +258,9 @@ router.post('/retrieveTestAndValidate', isAuthorized, (req, res) => {
 });
 */
 
-router.post('/build', isAuthorized, (req, res) => {
+router.post('/build', security.authFilter, (req, res) => {
     let payload = req.body;
-
+    console.log('API /build current user: ',req.currentUser);
     if (!payload) {
         return res.status(406).json({ error: 'build manifest is required' });
     }
