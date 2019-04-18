@@ -28,7 +28,7 @@ module.exports = function(org) {
 
     module.getRemoteAuth = function(userSchema,oauth=null) {
         return new Promise((resolve,reject)=>{
-            let q = `SELECT Id, Name, Description__c, Type__c, Token__c FROM RemoteAuth__c WHERE ownerId=${userSchema.forceUserId} LIMIT 1`;
+            let q = `SELECT Id, Name, Description__c, Type__c, Token__c FROM RemoteAuth__c WHERE ownerId='${userSchema.forceUserId}' LIMIT 1`;
             let queryOptions = {query: q};
 
             if (!org) {
