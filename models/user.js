@@ -17,6 +17,7 @@ function addUser(userSchema) {
             username: userSchema.username,
             orgName: userSchema.orgName,
             forceOauth: userSchema.forceOauth,
+            forceUserId: userSchema.forceUserId,
         });
         return newUser;
     }
@@ -45,6 +46,7 @@ function updateUser(userSchema) {
         } else {
             foundUser.orgName = userSchema.orgName;
             foundUser.forceOauth = userSchema.forceOauth;
+            foundUser.forceUserId = userSchema.forceUserId;
             return _users.update(foundUser);
         }
     } catch(error) {
