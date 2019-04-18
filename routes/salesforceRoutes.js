@@ -51,10 +51,25 @@ router.get('/callback', (req, res) => {
                         var existingUser = users.findByUsername(idResp.username);
                         //set oauth token
                         existingUser.forceOauth=oauth;
+                        existingUser.forceUserId=idResp.user_id;
                         users.updateUser(existingUser);
                         
                         var token = security.access.issue(existingUser);
-                        console.log('token issued ', token)
+                        console.log('token issued ', token);
+
+                        //save token to connected org for api authentication
+                        dataManager.getRemoteAuth(existingUser,existingUser.forceOauth)
+                        .then((rauth)=>{
+                            if (!rauth){
+                                dataManager.addRemoteAuth(rauth,token,existingUser.oauth);
+                            } else {
+                                //update existing remote auth
+                                rauth.Token__c = token;
+                                dataManager.updateRemoteAuth(rauth,existingUser.oauth);
+                            }
+                        }).catch((remoteAuthErr)=>{
+                            console.log('adding remote authentication to connected org failed',remoteAuthErr);
+                        });
 
                     } catch (registrationError) {
                         console.log(registrationError);
@@ -87,7 +102,7 @@ function isAuthorized(req, res, next) {
 }
 
 //Salesforce REST api
-router.get('/orgs', isAuthorized, (req, res) => {
+router.get('/orgs', security.authFilter, (req, res) => {
     var q = 'SELECT Id, Name, Type__c, password__c, username__c FROM Org__c LIMIT 10';
     org.query({ query: q }, function (err, resp) {
         if (!err && resp.records) {
