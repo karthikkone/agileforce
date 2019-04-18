@@ -72,10 +72,10 @@ function _parseDeployOptions(manifest) {
     return deployOptions;
 }
 
-function _retrieve(manifest) {
+function _retrieve(manifest,oauth=null) {
     let retrieveOptions = _parseRetrieveOptions(manifest);
 
-    metahelper.retreiveAndPoll(org).then(function (retResp) {
+    metahelper.retreiveAndPoll(org,retrieveOptions,oauth).then(function (retResp) {
         let zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
         let metaZipfile = path.join(appWorkpaceRoot, zipfileName);
         console.log('retrieval: ', retResp.status);
@@ -91,7 +91,7 @@ function _retrieve(manifest) {
     });
 }
 
-function _deploy(manifest, checkOnly = true) {
+function _deploy(manifest,oauth=null,checkOnly=true) {
     let targetOrgName = manifest.target.org.orgId;
     let retrievedZipfile;
     let retrieveOpts = _parseRetrieveOptions(manifest);
@@ -117,7 +117,7 @@ function _deploy(manifest, checkOnly = true) {
     //targetOrgConn.authenticate({username:})
     console.log('targetOrg in request ', targetOrgName);
     if (targetOrgName) {
-        metahelper.retreiveAndPoll(org, retrieveOpts)
+        metahelper.retreiveAndPoll(org, retrieveOpts,oauth)
             .then((retResp) => {
                 var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
                 var metaZipLocation = path.join(appWorkpaceRoot, zipfileName);
@@ -139,7 +139,7 @@ function _deploy(manifest, checkOnly = true) {
                 return zipUtil.readZipFrom(retrievedZipfile, 'base64');
             })
             .then((metaZipBase64) => {
-                return metahelper.validateAndPoll(targetOrgConn, metaZipBase64, deployOpts);
+                return metahelper.validateAndPoll(targetOrgConn,metaZipBase64,deployOpts,oauth);
             })
             .then((validateResp) => {
                 console.log('validation status : ', validateResp.status);
@@ -153,17 +153,17 @@ function _deploy(manifest, checkOnly = true) {
 }
 //exports
 module.exports = {
-    build: function (manifest) {
+    build: function (manifest,currentUser) {
 
         switch (manifest.task) {
             case 'retrieve':
-                _retrieve(manifest);
+                _retrieve(manifest,currentUser.forceOauth);
                 break;
             case 'validate':
-                _deploy(manifest, checkOnly = true);
+                _deploy(manifest, currentUser.forceOauth,checkOnly=true);
                 break;
             case 'deploy':
-                _deploy(manifest, checkOnly = false);
+                _deploy(manifest,currentUser.forceOauth,checkOnly=true);
                 break;
             default:
                 throw new Error('Invalid task');
