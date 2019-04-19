@@ -61,11 +61,11 @@ router.get('/callback', (req, res) => {
                         dataManager.getRemoteAuth(existingUser,existingUser.forceOauth)
                         .then((rauth)=>{
                             if (!rauth){
-                                dataManager.addRemoteAuth(rauth,token,existingUser.forceOauth);
+                                return dataManager.addRemoteAuth(rauth,token,existingUser.forceOauth);
                             } else {
                                 //update existing remote auth
                                 rauth.Token__c = token;
-                                dataManager.updateRemoteAuth(rauth,existingUser.forceOauth);
+                                return dataManager.updateRemoteAuth(rauth,existingUser.forceOauth);
                             }
                         }).catch((remoteAuthErr)=>{
                             console.log('adding remote authentication to connected org failed',remoteAuthErr);
