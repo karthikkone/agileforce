@@ -60,15 +60,9 @@ router.get('/callback', (req, res) => {
                         //save token to connected org for api authentication
                         dataManager.getRemoteAuth(existingUser,existingUser.forceOauth)
                         .then((rauth)=>{
-                            if (!rauth){
-                                return dataManager.addRemoteAuth(rauth,token,existingUser.forceOauth);
-                            } else {
-                                //update existing remote auth
-                                rauth.Token__c = token;
-                                return dataManager.updateRemoteAuth(rauth,existingUser.forceOauth);
-                            }
+                            dataManager.addOrUpdateRemoteAuth(token,rauth,existingUser.forceOauth);
                         }).catch((remoteAuthErr)=>{
-                            console.log('adding remote authentication to connected org failed',remoteAuthErr);
+                            console.error('adding remote authentication to connected org failed',remoteAuthErr);
                         });
 
                     } catch (registrationError) {

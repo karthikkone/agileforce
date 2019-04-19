@@ -50,7 +50,7 @@ module.exports = function (org) {
             queryOptions.oauth = oauth;
         }
         return new Promise((resolve, reject) => {
-            console.log('finding remote auth object associated with user :',userSchema.username);
+            console.log('finding remote auth object associated with user :', userSchema.username);
             org.query(queryOptions, (err, resp) => {
                 if (!err) {
                     let rauth = (resp && resp.records && resp.records[0] ?
@@ -64,7 +64,7 @@ module.exports = function (org) {
         });
     }
 
-    module.addRemoteAuth = function (token, oauth = null) {
+    module.addOrUpdateRemoteAuth = function (token, existingRemoteAuth = null, oauth = null) {
 
         let dmlOptions = {};
         if (!org) {
@@ -84,16 +84,23 @@ module.exports = function (org) {
             dmlOptions.oauth = oauth;
         }
 
-        //add required field sObject to dml Options
-        dmlOptions.sobject = nforce.createSObject('RemoteAuth__c', {
-            Description__c: 'agileforce auth @' + (new Date()),
-            Type__c: 'AgileForce',
-            Token__c: token,
-        });
-        //insert record
+        if (existingRemoteAuth != null) {
+            //existing sobject queried from REST api
+            dmlOptions.sobject = existingRemoteAuth;
+        }
+        else {
+            //add required field sObject to dml Options
+            dmlOptions.sobject = nforce.createSObject('RemoteAuth__c', {
+                Description__c: 'agileforce auth @' + (new Date()),
+                Type__c: 'AgileForce',
+                Token__c: token,
+            });
+        }
+
+        //insert or update record
         return new Promise((resolve, reject) => {
             console.log('adding a remote auth object')
-            org.insert(dmlOptions, (err, resp) => {
+            org.upsert(dmlOptions, (err, resp) => {
                 if (!err) {
                     reject(err);
                 } else {
