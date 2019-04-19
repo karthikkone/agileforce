@@ -282,7 +282,7 @@ router.post('/build', security.authFilter, (req, res) => {
         return res.status(406).json({ error: 'invalid manifest: ' + parsed.error.message });
     } else {
         let buildManifest = parsed.value;
-        core.build(buildManifest);
+        core.build(buildManifest,req.currentUser);
         return res.status(201).json({ message: 'operation queued' });
     }
 
