@@ -62,7 +62,7 @@ router.get('/callback', (req, res) => {
                         .then((rauth)=>{
                             return dataManager.addOrUpdateRemoteAuth(token,rauth,existingUser.forceOauth);
                         }).catch((remoteAuthErr)=>{
-                            console.error('adding remote authentication to connected org failed',remoteAuthErr);
+                            console.error('adding remote authentication to connected org failed',remoteAuthErr.message);
                         });
 
                     } catch (registrationError) {
