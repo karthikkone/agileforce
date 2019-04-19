@@ -2,10 +2,10 @@ module.exports = {
 
     retreiveAndPoll: function retrieveAndPoll(org, retrieveOptions, oauth=null) {
         if (!org) {
-            Promise.reject(new TypeError('org is required'));
+            return Promise.reject(new TypeError('org is required'));
         }
         if (!org.retrieveOptions) {
-            Promise.reject(new TypeError('retrieveOptions are required'));
+            return Promise.reject(new TypeError('retrieveOptions are required'));
         }
         if (org.mode == 'multi' && !oauth) {
             Promise.reject(new TypeError('oauth is required for a multi mode org'));
@@ -23,17 +23,17 @@ module.exports = {
     validateAndPoll: function validateAndPoll(org,metaZipFile,deployOptions,oauth=null) {
         let opts = {};
         if (!org) {
-            Promise.reject(new TypeError('org is required'));
+            return Promise.reject(new TypeError('org is required'));
         }
         if (!org.deployOptions) {
-            Promise.reject(new TypeError('retrieveOptions are required'));
+            return Promise.reject(new TypeError('retrieveOptions are required'));
         }
         if (org.mode == 'multi' && !oauth) {
-            Promise.reject(new TypeError('oauth is required for a multi mode org'));
+            return Promise.reject(new TypeError('oauth is required for a multi mode org'));
         }
 
         if (!metaZipFile) {
-            Promise.reject(new TypeError('metaZipFile is required'));
+            return Promise.reject(new TypeError('metaZipFile is required'));
         }
 
         if (org.mode == 'multi') {
@@ -52,17 +52,17 @@ module.exports = {
     validateTestAndPoll: function validateTestAndPoll(org,metaZipFile,deployOptions,oauth=null) {
         let opts = {};
         if (!org) {
-            Promise.reject(new TypeError('org is required'));
+            return Promise.reject(new TypeError('org is required'));
         }
         if (!org.deployOptions) {
-            Promise.reject(new TypeError('retrieveOptions are required'));
+            return Promise.reject(new TypeError('retrieveOptions are required'));
         }
         if (org.mode == 'multi' && !oauth) {
-            Promise.reject(new TypeError('oauth is required for a multi mode org'));
+            return Promise.reject(new TypeError('oauth is required for a multi mode org'));
         }
 
         if (!metaZipFile) {
-            Promise.reject(new TypeError('metaZipFile is required'));
+            return Promise.reject(new TypeError('metaZipFile is required'));
         }
 
         if (org.mode == 'multi') {
