@@ -126,7 +126,8 @@ function _deploy(manifest,oauth=null,checkOnly=true) {
             })
             .then((savedZipFilePath) => {
                 retrievedZipfile = savedZipFilePath;
-                return dataManager.getOrg(targetOrgName, 'production');
+                
+                return dataManager.getOrg(targetOrgName, 'production',oauth);
             })
             .then((targetOrg) => {
                 return authManager.authenticateSingleModeOrg(targetOrgConn,
