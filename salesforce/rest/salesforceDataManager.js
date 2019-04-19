@@ -64,7 +64,7 @@ module.exports = function(org) {
         });
     }
 
-    module.addRemoteAuth = function(userSchema,token,oauth=null) {
+    module.addRemoteAuth = function(token,oauth=null) {
         return new Promise((resolve, reject)=>{
             let dmlOptions = {};
             if (!org) {
@@ -73,10 +73,6 @@ module.exports = function(org) {
             //oauth is required in multi mode org
             if (org.mode == 'multi' && oauth == null) {
                 reject(new TypeError('oauth is required in multi mode'));
-            }
-
-            if (!userSchema) {
-                reject(new TypeError('userSchema is required'))
             }
 
             if(!token) {
