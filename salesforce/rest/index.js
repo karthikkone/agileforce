@@ -14,7 +14,7 @@ module.exports = function(org,oauth=null) {
     }
 
     restModule.upsertRemoteAuth = function(rauth,token) {
-        return updateRauth.addOrUpdateRemoteAuth(org,token,remoteAuth,oauth);
+        return updateRauth.addOrUpdateRemoteAuth(org,token,rauth,oauth);
     }
 
     return restModule;
