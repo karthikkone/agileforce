@@ -7,9 +7,6 @@ const salesforce = require('../salesforce');
 const zipUtil = require('../utils').zipUtil;
 const authManager = require('../salesforce').auth;
 const connectedapp = require('../org');
-//load nforce meta-data plugin
-require('nforce-metadata')(nforce);
-
 //constants
 
 const router = express.Router();
