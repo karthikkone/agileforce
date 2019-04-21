@@ -90,7 +90,7 @@ module.exports = {
     build: async function (manifest, currentUser) {
 
         try {
-            let restApi = salesforce.rest(org, oauth);
+            let restApi = salesforce.rest(org, currentUser.oauth);
             let sourceOrgName = manifest.source.org.orgId;
             let targetOrgName = manifest.target.org.orgId;
 
