@@ -1,6 +1,6 @@
 module.exports = {
 
-    getOrg: function (org,name, type = 'target', oauth = null) {
+    getOrg: function (org,name, type = 'target', oauth) {
         console.log(`getting org by name : ${name} | api org : ${org}`);
         return new Promise((resolve, reject) => {
             let q = `SELECT Id, Name, Type__c, password__c, username__c, token__c FROM Org__c WHERE Name='${name}' AND Type__c='${type}' LIMIT 5`;
@@ -8,6 +8,7 @@ module.exports = {
 
             if (org) {
                 if (org.mode == 'multi') {
+                    console.log('getOrg oauth ',JSON.stringify(oauth));
                     queryOptions.oauth = oauth;
                 }
                 org.query(queryOptions, (err, resp) => {

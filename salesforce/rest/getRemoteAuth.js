@@ -1,5 +1,5 @@
 module.exports = {
-    getRemoteAuth: function (org,userSchema, oauth = null) {
+    getRemoteAuth: function (org,userSchema, oauth) {
         let q = `SELECT Id, Name, Description__c, Type__c, Token__c FROM RemoteAuth__c WHERE ownerId='${userSchema.forceUserId}' LIMIT 1`;
         let queryOptions = { query: q };
 
