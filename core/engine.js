@@ -6,11 +6,9 @@ const path = require('path');
 const salesforce = require('../salesforce');
 const zipUtil = require('../utils').zipUtil;
 const authManager = require('../salesforce').auth;
-//load nforce-metadata plugin
-require('nforce-metadata')(nforce);
-//const connectedapp = require('../org');
-//constants
 
+const orgManager = require('../org');
+//constants
 const router = express.Router();
 
 let appWorkpaceRoot = config.app.workspaceRoot;
@@ -105,7 +103,8 @@ module.exports = {
     build: async function (manifest, currentUser) {
         
         try {
-            let restApi = salesforce.rest(org, currentUser.forceOauth);
+            let sourceOrg = orgManager.multiModeOrg();
+            let restApi = salesforce.rest(sourceOrg, currentUser.forceOauth);
             let sourceOrgName = manifest.source.org.orgId;
             let targetOrgName = manifest.target.org.orgId;
 
@@ -130,8 +129,8 @@ module.exports = {
 
             console.log('target ORG data : ',JSON.stringify(targetOrgData))
             
-            
-            org.authenticate({
+            let targetOrg = orgManager.multiModeOrg();
+            targetOrg.authenticate({
                 username: targetOrgData.username__c,
                 password: targetOrgData.password__c,
                 securityToken: targetOrgData.token__c
