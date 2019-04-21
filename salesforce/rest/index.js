@@ -6,6 +6,7 @@ module.exports = function(org,oauth=null) {
     let restModule = {};
 
     restModule.getOrg = function (name,type='production') {
+        console.log('org passed = ',org)
         return orgs.getOrg(org,name,type,oauth);
     }
 

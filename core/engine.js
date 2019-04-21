@@ -108,6 +108,8 @@ module.exports = {
                 );
             }
 
+            console.log('target in requuest : ', targetOrgName);
+            console.log('nforce org object ', JSON.stringify(org));
             //get an authenticate target org
             let targetOrgData = await restApi.getOrg(targetOrgName);
             targetOrgOauth = await authManager.authenticateSingleModeOrg(org,
