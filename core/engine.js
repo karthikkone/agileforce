@@ -6,14 +6,29 @@ const path = require('path');
 const salesforce = require('../salesforce');
 const zipUtil = require('../utils').zipUtil;
 const authManager = require('../salesforce').auth;
-const connectedapp = require('../org');
+//load nforce-metadata plugin
+require('nforce-metadata')(nforce);
+//const connectedapp = require('../org');
 //constants
 
 const router = express.Router();
 
 let appWorkpaceRoot = config.app.workspaceRoot;
 
-const org = connectedapp.multiModeOrg();
+let sfClientId = config.salesforce.clientId;
+let sfClientSecret = config.salesforce.clientSecret;
+let sfRedirectUri = config.salesforce.callBackUri;
+
+const org = nforce.createConnection({
+    clientId: sfClientId,
+    clientSecret: sfClientSecret,
+    sfRedirectUri: sfRedirectUri,
+    mode: ['multi'],
+    metaOpts: {       // options for nforce-metadata
+        interval: 2000  // poll interval can be specified (optional)
+      },
+      plugins: ['meta'] // loads the plugin in this connection 
+})
 
 //private methods
 function _parseRetrieveOptions(manifest) {
