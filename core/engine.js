@@ -114,7 +114,7 @@ module.exports = {
             let targetOrgData = await restApi.getOrg(targetOrgName);
 
             console.log('target ORG data : ',JSON.stringify(targetOrgData))
-            let targetOrgOauth;
+            
             
             org.authenticate({
                 username: targetOrgData.username__c,
@@ -132,7 +132,7 @@ module.exports = {
             );
 
             console.log('target org oauth ', targetOrgOauth);
-            
+
             switch (manifest.task) {
                 case 'retrieve':
                     _retrieve(manifest, sourceOrgOauth);
