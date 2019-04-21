@@ -22,7 +22,7 @@ let sfRedirectUri = config.salesforce.callBackUri;
 const org = nforce.createConnection({
     clientId: sfClientId,
     clientSecret: sfClientSecret,
-    sfRedirectUri: sfRedirectUri,
+    redirectUri: sfRedirectUri,
     mode: 'multi',
     metaOpts: {       // options for nforce-metadata
         interval: 2000  // poll interval can be specified (optional)
