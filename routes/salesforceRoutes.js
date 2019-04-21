@@ -34,7 +34,6 @@ const org = nforce.createConnection({
         pollInterval: 1000
     }
 });
-const dataManager = salesforce.rest(org);
 //authentication
 router.get('/callback', (req, res) => {
 
@@ -44,6 +43,7 @@ router.get('/callback', (req, res) => {
             org.getIdentity({ oauth: oauth }, (err, idResp) => {
                 if (!err) {
                     console.log(JSON.stringify(idResp));
+                    let dataManager = salesforce.rest(org,oauth);
                     try {
                         if (!security.auth.isRegisteredUser(idResp.username)) {
                             security.auth.registerUser(idResp.username, oauth);
@@ -60,7 +60,7 @@ router.get('/callback', (req, res) => {
                         //save token to connected org for api authentication
                         dataManager.getRemoteAuth(existingUser,existingUser.forceOauth)
                         .then((rauth)=>{
-                            return dataManager.addOrUpdateRemoteAuth(token,rauth,existingUser.forceOauth);
+                            return dataManager.upsertRemoteAuth(token,rauth,existingUser.forceOauth);
                         }).catch((remoteAuthErr)=>{
                             console.error('adding remote authentication to connected org failed',remoteAuthErr.message);
                         });

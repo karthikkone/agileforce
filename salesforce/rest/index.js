@@ -9,11 +9,11 @@ module.exports = function(org,oauth=null) {
         return orgs.getOrg(org,name,type,oauth);
     }
 
-    restModule.getRauth = function(userschema) {
+    restModule.getRemoteAuth = function(userschema) {
         return rauth.getRauth(org,userschema,oauth);
     }
 
-    restModule.upsertRauth = function(rauth,token) {
+    restModule.upsertRemoteAuth = function(rauth,token) {
         return updateRauth.addOrUpdateRemoteAuth(org,token,remoteAuth,oauth);
     }
 
