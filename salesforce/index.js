@@ -1,5 +1,5 @@
-var meta = require('./meta/salesforceMeta');
-var rest = require('./rest/salesforceDataManager');
+var meta = require('./meta');
+var rest = require('./rest');
 var auth = require('./auth/authManager');
 
 module.exports = {
