@@ -36,6 +36,7 @@ module.exports = {
             console.log('adding a remote auth object')
             org.upsert(dmlOptions, (err, resp) => {
                 if (!err) {
+                    console.log(err);
                     reject(err);
                 } else {
                     console.log('remote auth inserted');
