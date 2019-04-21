@@ -10,7 +10,7 @@ module.exports = function(org,oauth=null) {
     }
 
     restModule.getRemoteAuth = function(userschema) {
-        return rauth.getRauth(org,userschema,oauth);
+        return rauth.getRemoteAuth(org,userschema,oauth);
     }
 
     restModule.upsertRemoteAuth = function(rauth,token) {
