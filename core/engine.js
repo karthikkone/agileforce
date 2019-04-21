@@ -129,11 +129,11 @@ module.exports = {
 
             console.log('target ORG data : ',JSON.stringify(targetOrgData))
             
-            let targetOrg = orgManager.multiModeOrg();
+            let targetOrg = orgManager.singleModeOrg();
             targetOrg.authenticate({
                 username: targetOrgData.username__c,
                 password: targetOrgData.password__c,
-                securityToken: targetOrgData.token__c
+                securityToken: targetOrgData.token__c,
                 },
                 (err, resp) => {
                     if (!err) {
@@ -144,7 +144,7 @@ module.exports = {
                     }
                 }
             );
-
+            targetOrgOauth = targetOrg.oauth;
             console.log('target org oauth ', targetOrgOauth);
 
             switch (manifest.task) {
