@@ -114,14 +114,25 @@ module.exports = {
             let targetOrgData = await restApi.getOrg(targetOrgName);
 
             console.log('target ORG data : ',JSON.stringify(targetOrgData))
-            targetOrgOauth = await org.authenticate({
+            let targetOrgOauth;
+            
+            org.authenticate({
                 username: targetOrgData.username__c,
                 password: targetOrgData.password__c,
                 securityToken: targetOrgData.token__c
+                },
+                (err, resp) => {
+                    if (!err) {
+                        targetOrgOauth = resp;
+                    }
+                    else {
+                        console.log('target org authentication failed with error ...',err);
+                    }
                 }
             );
 
-
+            console.log('target org oauth ', targetOrgOauth);
+            
             switch (manifest.task) {
                 case 'retrieve':
                     _retrieve(manifest, sourceOrgOauth);
