@@ -2,7 +2,7 @@ const orgs = require('./getOrg');
 const rauth = require('./getRemoteAuth');
 const updateRauth = require('./upsertRemoteAuth');
 
-module.exports = function(org,oauth=null) {
+module.exports = function(org,oauth) {
     let restModule = {};
 
     restModule.getOrg = function (name,type='production') {

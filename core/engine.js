@@ -88,9 +88,9 @@ async function _deploy(manifest, sourceOrgOauth, targetOrgOauth,checkOnly=true) 
 module.exports = {
 
     build: async function (manifest, currentUser) {
-
+        
         try {
-            let restApi = salesforce.rest(org, currentUser.oauth);
+            let restApi = salesforce.rest(org, currentUser.forceOauth);
             let sourceOrgName = manifest.source.org.orgId;
             let targetOrgName = manifest.target.org.orgId;
 
