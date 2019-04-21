@@ -60,7 +60,7 @@ async function build(manifest, currentUser) {
     let targetOrg = orgManager.multiModeOrg();
     let targetOrgAuth;
 
-    let sourceOrgAuth;
+    
     try {
         if (sourceOrgName == '__self__') {
             sourceOrgAuth = currentUser.forceOauth;
