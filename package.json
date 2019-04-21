@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "6.x"
+    "node": "10101010101010101010.x"
   },
   "dependencies": {
     "archiver": "^3.0.0",
