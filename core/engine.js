@@ -85,7 +85,9 @@ async function _retrieve(manifest, sourceOauth) {
 
 async function _deploy(manifest, sourceOrgOauth, targetOrgOauth,checkOnly=true) {
     try {
-        let targetMeta = salesforce.meta(org,targetOrgOauth);
+        console.log('deploy started ...')
+        let targetOrg = orgManager.multiModeOrg();
+        let targetMeta = salesforce.meta(targetOrg,targetOrgOauth);
         let deployOptions = _parseDeployOptions(manifest);
         let metaZipLocation = await _retrieve(manifest, sourceOrgOauth);
         let metaZipBase64 = await zipUtil.readZipFrom(metaZipLocation, 'base64');
