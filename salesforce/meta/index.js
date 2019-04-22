@@ -14,7 +14,7 @@ module.exports = function(org, oauth) {
     }
 
     metaModule.retrieveAndPoll = function(retrieveOptions) {
-        return retrieve.retreiveAndPoll(org,retrieveOptions,oauth);
+        return retrieve.retrieveAndPoll(org,retrieveOptions,oauth);
     }
     return metaModule;
 }
