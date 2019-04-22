@@ -92,7 +92,7 @@ async function _deploy(manifest, sourceOrgOauth, targetOrgOauth,checkOnly=true) 
         
         if (checkOnly) deployOptions.checkOnly=true;
 
-        targetMeta.deployAndPoll(metaZipBase64,deployOptions);
+        await targetMeta.deployAndPoll(metaZipBase64,deployOptions);
     } catch (err) {
         console.log('build task deploy failed : ',err);
         return err;
