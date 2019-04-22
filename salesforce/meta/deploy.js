@@ -4,8 +4,8 @@ module.exports = {
         if (!org) {
             return Promise.reject(new TypeError('org is required'));
         }
-        if (!org.deployOptions) {
-            return Promise.reject(new TypeError('retrieveOptions are required'));
+        if (!deployOptions) {
+            return Promise.reject(new TypeError('deployOptions are required'));
         }
         if (org.mode == 'multi' && !oauth) {
             return Promise.reject(new TypeError('oauth is required for a multi mode org'));
