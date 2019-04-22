@@ -68,17 +68,19 @@ function _parseDeployOptions(manifest) {
 }
 
 async function _retrieve(manifest, sourceOauth) {
+    try {
     let retrieveOptions = _parseRetrieveOptions(manifest);
     let metaApi = salesforce.meta(org, sourceOauth);
-        metaApi.retrieveAndPoll(retrieveOptions)
-        .then(function (retResp) {
-            var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
-            var metaZipLocation = path.join(appWorkpaceRoot, zipfileName);
-            return zipUtil.createZipFrom(retResp.zipFile, metaZipLocation);
-        })
-        .error((err) => {
-            return err;
-        });
+    let retrieval = await metaApi.retrieveAndPoll(retrieveOptions);
+    let zipFileName = 'nforce-meta-retrieval-'+retrieval.id+'.zip';
+    let metaZipLocation = path.join(appWorkpaceRoot,zipFileName);
+
+    let saveLocation = await zipUtil.createZipFrom(retrieval.zipFile, metaZipLocation);
+    return saveLocation;
+    } catch(err) {
+        console.log('build: retrieve failed with error : ',err);
+        return err;
+    }
 }
 
 async function _deploy(manifest, sourceOrgOauth, targetOrgOauth,checkOnly=true) {
