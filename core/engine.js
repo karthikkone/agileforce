@@ -10,7 +10,7 @@ const authManager = require('../salesforce').auth;
 const orgManager = require('../org');
 //constants
 const router = express.Router();
-
+const logger = require('../logger');
 let appWorkpaceRoot = config.app.workspaceRoot;
 
 let sfClientId = config.salesforce.clientId;
@@ -24,8 +24,8 @@ const org = nforce.createConnection({
     mode: 'multi',
     metaOpts: {       // options for nforce-metadata
         interval: 2000  // poll interval can be specified (optional)
-      },
-      plugins: ['meta'] // loads the plugin in this connection 
+    },
+    plugins: ['meta'] // loads the plugin in this connection 
 })
 
 //private methods
@@ -68,34 +68,49 @@ function _parseDeployOptions(manifest) {
 
 async function _retrieve(manifest, sourceOauth) {
     try {
-    let retrieveOptions = _parseRetrieveOptions(manifest);
-    let metaApi = salesforce.meta(org, sourceOauth);
-    let retrieval = await metaApi.retrieveAndPoll(retrieveOptions);
-    let zipFileName = 'nforce-meta-retrieval-'+retrieval.id+'.zip';
-    let metaZipLocation = path.join(appWorkpaceRoot,zipFileName);
+        logger.debug(`retrieve: source org Oauth: ${sourceOauth}`)
+        let retrieveOptions = _parseRetrieveOptions(manifest);
+        logger.info(`retrieve: retrieve options: ${retrieveOptions}`);
+        let metaApi = salesforce.meta(org, sourceOauth);
+        let retrieval = await metaApi.retrieveAndPoll(retrieveOptions);
 
-    let saveLocation = await zipUtil.createZipFrom(retrieval.zipFile, metaZipLocation);
-    return saveLocation;
-    } catch(err) {
-        console.log('build: retrieve failed with error : ',err);
+        logger.info(`retrieve: retrieval id : ${retrieval.id} done`);
+
+        let zipFileName = 'nforce-meta-retrieval-' + retrieval.id + '.zip';
+        let metaZipLocation = path.join(appWorkpaceRoot, zipFileName);
+
+        logger.info(`meta data will be saved to metaZipLocation`);
+        //create metadata zip and return file path
+        let saveLocation = await zipUtil.createZipFrom(retrieval.zipFile, metaZipLocation);
+        return saveLocation;
+    } catch (err) {
+        console.log('build: retrieve failed with error : ', err);
         return err;
     }
 }
 
-async function _deploy(manifest, sourceOrgOauth, targetOrgOauth,checkOnly=true) {
+async function _deploy(manifest, sourceOrgOauth, targetOrgOauth, checkOnly = true) {
     try {
-        console.log('deploy started ...')
+
+        logger.info('starting build taks : deploy');
+        logger.debug(`deploy: source org oauth : ${sourceOrgOauth}`);
+        logger.debug(`deploy: target org oauth : ${targetOrgOauth}`);
+
         let targetOrg = orgManager.multiModeOrg();
-        let targetMeta = salesforce.meta(targetOrg,targetOrgOauth);
+        let targetMeta = salesforce.meta(targetOrg, targetOrgOauth);
         let deployOptions = _parseDeployOptions(manifest);
+
+        logger.verbose(`deploy: deploy options : ${deployOptions}`);
+
+        //retrieve metadata zip file path
         let metaZipLocation = await _retrieve(manifest, sourceOrgOauth);
         let metaZipBase64 = await zipUtil.readZipFrom(metaZipLocation, 'base64');
-        
-        if (checkOnly) deployOptions.checkOnly=true;
 
-        await targetMeta.deployAndPoll(metaZipBase64,deployOptions);
+        if (checkOnly) deployOptions.checkOnly = true;
+
+        await targetMeta.deployAndPoll(metaZipBase64, deployOptions);
     } catch (err) {
-        console.log('build task deploy failed : ',err);
+        logger.error('task deploy failed' + err.message);
         return err;
     }
 }
@@ -104,7 +119,8 @@ async function _deploy(manifest, sourceOrgOauth, targetOrgOauth,checkOnly=true) 
 module.exports = {
 
     build: async function (manifest, currentUser) {
-        
+        logger.info(`build: build started  by user ${currentUser.username} `);
+
         try {
             let sourceOrg = orgManager.multiModeOrg();
             let restApi = salesforce.rest(sourceOrg, currentUser.forceOauth);
@@ -115,6 +131,7 @@ module.exports = {
             let targetOrgOauth;
 
             if (sourceOrgName == '__self__') {
+                logger.info('build: source org is connected org');
                 sourceOrgOauth = currentUser.forceOauth;
             } else {
                 let sourceOrgData = await restApi.getOrg(sourceOrgName);
@@ -125,27 +142,28 @@ module.exports = {
                 );
             }
 
-            console.log('target in requuest : ', targetOrgName);
-            
-            //get an authenticate target org
+            logger.info(`build: target org in request : ${targetOrgName}`);
+
+            //get target org from connected org
             let targetOrgData = await restApi.getOrg(targetOrgName);
 
-            if (targetOrgData) {
-            console.log('target ORG data : ',targetOrgData)
-            console.log('username: ',targetOrgData.get('username__c'));
-            console.log('pwd: ',targetOrgData.get('password__c'));
-            console.log('token: ',targetOrgData.get('token__c'));
-            }
+
+            logger.debug('target ORG data : ', targetOrgData);
+
             let targetOrg = orgManager.multiModeOrg();
-            
+
             targetOrgOauth = await targetOrg.authenticate({
                 username: targetOrgData.get('username__c'),
                 password: targetOrgData.get('password__c'),
                 securityToken: targetOrgData.get('token__c'),
             });
 
-            
-            console.log('target org oauth ', targetOrgOauth);
+
+            logger.info('targetOrgOauth authentication : ',
+                (targetOrgOauth ? true : false)
+            );
+
+            logger.info('build task in request ', manifest.task);
 
             switch (manifest.task) {
                 case 'retrieve':
@@ -157,9 +175,10 @@ module.exports = {
                 case 'validate':
                     _deploy(manifest, sourceOrgOauth, targetOrgOauth, checkOnly = true);
                     break;
+
             }
         } catch (err) {
-            console.log('build failed with errors', err);
+            logger.debug('build failed with errors', err);
         }
 
     }
