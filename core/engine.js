@@ -47,7 +47,6 @@ function _parseRetrieveOptions(manifest) {
 
 function _parseDeployOptions(manifest) {
     let deployOptions = {
-        apiVersion: '45.0',
     }
 
     if (manifest.task == 'deploy') {
