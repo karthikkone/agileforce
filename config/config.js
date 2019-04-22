@@ -16,6 +16,9 @@ const production = {
         workspaceRoot: process.env.APP_WORKSPACE_ROOT || 'tmp',
         db: {
             name: process.env.APP_DB_NAME || 'app-db.json'
+        },
+        logging: {
+            level: process.env.APP_LOG_LEVEL || 'info'
         }
     },
     salesforce: {
@@ -36,6 +39,9 @@ const test = {
         workspaceRoot: process.env.APP_WORKSPACE_ROOT || 'tmp',
         db: {
             name: process.env.APP_DB_NAME || 'app-test-db.json'
+        },
+        logging: {
+            level: process.env.APP_LOG_LEVEL || 'debug'
         }
     },
     salesforce: {
