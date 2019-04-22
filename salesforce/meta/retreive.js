@@ -4,7 +4,7 @@ module.exports = {
         if (!org) {
             return Promise.reject(new TypeError('org is required'));
         }
-        if (!org.retrieveOptions) {
+        if (!retrieveOptions) {
             return Promise.reject(new TypeError('retrieveOptions are required'));
         }
         if (org.mode == 'multi' && !oauth) {
