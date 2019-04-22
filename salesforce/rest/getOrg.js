@@ -1,28 +1,28 @@
 module.exports = {
 
-    getOrg: function (org,name, type = 'target', oauth) {
+    getOrg: async function (org,name,oauth) {
         console.log(`getting org by name : ${name} | api org : ${org}`);
-        return new Promise((resolve, reject) => {
-            let q = `SELECT Id, Name, Type__c, password__c, username__c, token__c FROM Org__c WHERE Name='${name}' AND Type__c='${type}' LIMIT 5`;
-            let queryOptions = { query: q };
+            let q = `SELECT Id, Name, Type__c, password__c, username__c, token__c FROM Org__c WHERE Name='${name}' LIMIT 5`;
+            let queryOptions = {query: q};
 
-            if (org) {
-                if (org.mode == 'multi') {
-                    console.log('getOrg oauth ',JSON.stringify(oauth));
-                    queryOptions.oauth = oauth;
-                }
-                org.query(queryOptions, (err, resp) => {
-                    if (!err && resp.records) {
-                        resolve(resp.records[0]);
-                    } else {
-                        reject(new Error(`no org found with name=${name},type=${type}`));
-                    }
-                });
-
-            } else { //auth failed
-                reject(new Error("authentication failure"));
+            if (org.mode == 'multi' && oauth == null) {
+                return Promise.reject(new Error('oauth is required in multi mode org'));
             }
-        });
+
+            if (org.mode == 'multi') {
+                queryOptions.oauth = oauth;    
+            }
+
+        return new Promise((resolve, reject)=>{
+            org.query(queryOptions, (err, resp)=>{
+                if (err) {
+                    reject(err);
+                }
+                console.log('REST org data : ',resp);
+                resolve(resp.records[0]);
+            });
+        });    
+
     }
 
 }

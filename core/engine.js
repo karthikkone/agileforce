@@ -70,7 +70,7 @@ function _parseDeployOptions(manifest) {
 async function _retrieve(manifest, sourceOauth) {
     let retrieveOptions = _parseRetrieveOptions(manifest);
     let metaApi = salesforce.meta(org, sourceOauth);
-        metaApi.retreiveAndPoll(retrieveOptions)
+        metaApi.retrieveAndPoll(retrieveOptions)
         .then(function (retResp) {
             var zipfileName = 'nforce-meta-retrieval-' + retResp.id + '.zip';
             var metaZipLocation = path.join(appWorkpaceRoot, zipfileName);
@@ -127,24 +127,21 @@ module.exports = {
             //get an authenticate target org
             let targetOrgData = await restApi.getOrg(targetOrgName);
 
-            console.log('target ORG data : ',JSON.stringify(targetOrgData))
+            if (targetOrgData) {
+            console.log('target ORG data : ',targetOrgData)
+            console.log('username: ',targetOrgData.get('username__c'));
+            console.log('pwd: ',targetOrgData.get('password__c'));
+            console.log('token: ',targetOrgData.get('token__c'));
+            }
+            let targetOrg = orgManager.multiModeOrg();
             
-            let targetOrg = orgManager.singleModeOrg();
-            targetOrg.authenticate({
-                username: targetOrgData.username__c,
-                password: targetOrgData.password__c,
-                securityToken: targetOrgData.token__c,
-                },
-                (err, resp) => {
-                    if (!err) {
-                        targetOrgOauth = resp;
-                    }
-                    else {
-                        console.log('target org authentication failed with error ...',err);
-                    }
-                }
-            );
-            targetOrgOauth = targetOrg.oauth;
+            targetOrgOauth = await targetOrg.authenticate({
+                username: targetOrgData.get('username__c'),
+                password: targetOrgData.get('password__c'),
+                securityToken: targetOrgData.get('token__c'),
+            });
+
+            
             console.log('target org oauth ', targetOrgOauth);
 
             switch (manifest.task) {

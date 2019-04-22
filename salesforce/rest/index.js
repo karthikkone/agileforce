@@ -5,9 +5,10 @@ const updateRauth = require('./upsertRemoteAuth');
 module.exports = function(org,oauth) {
     let restModule = {};
 
-    restModule.getOrg = function (name,type='production') {
+    restModule.getOrg = function (name) {
         console.log('org passed = ',org)
-        return orgs.getOrg(org,name,type,oauth);
+        console.log('oauth passed to rest : ',oauth);
+        return orgs.getOrg(org,name,oauth);
     }
 
     restModule.getRemoteAuth = function(userschema) {

@@ -2,7 +2,7 @@ const deploy = require('./deploy');
 const validate = require('./validate');
 const retrieve = require('./retreive');
 
-module.exports = function(org, ouath=null) {
+module.exports = function(org, oauth) {
     let metaModule = {};
 
     metaModule.deployAndPoll = function(metaZipFile, deployOptions) {
@@ -13,7 +13,8 @@ module.exports = function(org, ouath=null) {
         return validate.validateAndPoll(org,metaZipFile,deployOptions,oauth);
     }
 
-    metaModule.retrieveAndPoll = function() {
+    metaModule.retrieveAndPoll = function(retrieveOptions) {
         return retrieve.retreiveAndPoll(org,retrieveOptions,oauth);
     }
+    return metaModule;
 }
