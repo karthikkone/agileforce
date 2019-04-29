@@ -205,7 +205,11 @@ module.exports = {
             if (jobId && job) {
                 jobs.updateStatus(jobId, 'failed');
                 currentBuild.set('Status__c', 'Failed');
+                try {
                 restApi.updateBuild(currentBuild);
+                } catch(dmlError) {
+                    logger.error('Build update failed with errors '+err);
+                }
             }
         }
 
