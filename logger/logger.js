@@ -9,6 +9,7 @@ let logLevel = (config && config.app.logging.level ? config.app.logging.level : 
 const logger = createLogger({
     level : logLevel,
     format: format.combine(
+        format.colorize(),
         format.label({label: path.basename(process.mainModule.filename)}),
         format.timestamp({
             format: 'YYYY-MM-DD HH:mm:ss'
