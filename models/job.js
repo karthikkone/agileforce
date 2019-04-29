@@ -12,7 +12,7 @@ function addJob(jobSchema) {
     if (!jobSchema.task) {
         throw new TypeError('task is required');
     }
-   var result =  _jobs.insert({status:status, task: task});
+   var result =  _jobs.insert({status:jobSchema.status, task: jobSchema.task});
    return result.$loki;
 }
 
