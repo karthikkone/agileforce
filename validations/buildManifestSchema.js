@@ -76,6 +76,7 @@ const buildName = joi.string().required();
 const buildManifestSchema = joi.object({
     source: sourceSchema,
     target: targetSchema,
+    buildName: buildName,
     task: tasksSchema,
     components: componentSchema,
     tests: testSchema,
@@ -83,7 +84,6 @@ const buildManifestSchema = joi.object({
 })
 
 module.exports = {
-    buildName: buildName,
     sourceSchema: sourceSchema,
     componentSchema: componentSchema,
     testSchema: testSchema,
