@@ -5,7 +5,7 @@ const config = require('./config/config');
 const bodyParser = require('body-parser');
 //routes
 const salesforceRoutes = require('./routes/salesforceRoutes');
-
+const jobsRoutes = require('./routes/jobsRoutes');
 
 const app = express();
 const port = config.app.port;
@@ -25,6 +25,9 @@ app.get('/',(request, response) => {
 }); 
 
 app.use('/sforce',salesforceRoutes);
+
+//jobs api
+app.use('/jobs', jobsRoutes);
 
 app.listen(port, (err)=> {
     if (err) {
