@@ -11,6 +11,7 @@ const orgManager = require('../org');
 //constants
 const router = express.Router();
 const logger = require('../logger');
+const jobs = require('../models/job');
 let appWorkpaceRoot = config.app.workspaceRoot;
 
 let sfClientId = config.salesforce.clientId;
@@ -89,7 +90,7 @@ async function _retrieve(manifest, sourceOauth) {
     }
 }
 
-async function _deploy(manifest, sourceOrgOauth, targetOrgOauth, checkOnly = true) {
+async function _deploy(manifest, sourceOrgOauth, targetOrgOauth,checkOnly = true) {
     try {
 
         logger.info('starting build taks : deploy');
@@ -110,7 +111,7 @@ async function _deploy(manifest, sourceOrgOauth, targetOrgOauth, checkOnly = tru
 
         await targetMeta.deployAndPoll(metaZipBase64, deployOptions);
     } catch (err) {
-        logger.error('task deploy failed' + err.message);
+        logger.error('task deploy failed ' + err.message);
         return err;
     }
 }
@@ -118,15 +119,18 @@ async function _deploy(manifest, sourceOrgOauth, targetOrgOauth, checkOnly = tru
 //exports
 module.exports = {
 
-    build: async function (manifest, currentUser) {
-        logger.info(`build: build started  by user ${currentUser.username} `);
+    build: async function (manifest, currentUser, jobId) {
+        logger.info(`build: build started by user ${currentUser.username} `);
+        let job = jobs.findById(jobId);
 
+        if (!job) {
+            logger.debug('no job found with id '+jobId);
+        }
         try {
             let sourceOrg = orgManager.multiModeOrg();
             let restApi = salesforce.rest(sourceOrg, currentUser.forceOauth);
             let sourceOrgName = manifest.source.org.orgId;
             let targetOrgName = manifest.target.org.orgId;
-
             let sourceOrgOauth;
             let targetOrgOauth;
 
@@ -173,12 +177,23 @@ module.exports = {
                     _deploy(manifest, sourceOrgOauth, targetOrgOauth)
                     break;
                 case 'validate':
-                    _deploy(manifest, sourceOrgOauth, targetOrgOauth, checkOnly = true);
+                    _deploy(manifest, sourceOrgOauth, targetOrgOauth,checkOnly = true);
                     break;
 
+                default:
+                    logger.error(`no such task ${manifest.task}`)
+                    break;
+            
+            //task executed sucessfully
+            if (jobId && job){
+                jobs.updateStatus(jobId, 'successful');
+            }
             }
         } catch (err) {
-            logger.debug('build failed with errors', err);
+            logger.debug('build failed with errors: ',err);
+            if(jobId && job) {
+                jobs.updateStatus(jobId, 'failed');
+            }
         }
 
     }
