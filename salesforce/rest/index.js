@@ -1,7 +1,8 @@
 const orgs = require('./getOrg');
 const rauth = require('./getRemoteAuth');
 const updateRauth = require('./upsertRemoteAuth');
-
+const builds = require('./getBuild');
+const buildUpdates = require('./updateBuild');
 module.exports = function(org,oauth) {
     let restModule = {};
 
@@ -17,6 +18,14 @@ module.exports = function(org,oauth) {
 
     restModule.upsertRemoteAuth = function(rauth,token) {
         return updateRauth.addOrUpdateRemoteAuth(org,token,rauth,oauth);
+    }
+
+    restModule.getBuild = function(name) {
+        return builds.getBuild(org,name,oauth);
+    }
+
+    restModule.updateBuild = function(build) {
+        return buildUpdates.updateBuild(org,build,oauth);
     }
 
     return restModule;
