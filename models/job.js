@@ -5,8 +5,14 @@ let _jobs = db.addCollection('jobs',{
     indices: ['buildId'],
 });
 
-function addJob(buildId,status='In progress') {
-   var result =  _jobs.insert({buildId:buildId,status:status});
+function addJob(jobSchema) {
+    if (!jobSchema.status) {
+        throw new TypeError('status is missing');
+    }
+    if (!jobSchema.task) {
+        throw new TypeError('task is required');
+    }
+   var result =  _jobs.insert({status:status, task: task});
    return result.$loki;
 }
 
