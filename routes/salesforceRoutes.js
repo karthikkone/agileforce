@@ -12,6 +12,7 @@ const core = require('../core');
 const joi = require('joi');
 const security = require('../security');
 const users = require('../models/user');
+const jobs = require('../models/job');
 //load nforce meta-data plugin
 //require('nforce-metadata')(nforce);
 
@@ -282,8 +283,11 @@ router.post('/build', security.authFilter, (req, res) => {
         return res.status(406).json({ error: 'invalid manifest: ' + parsed.error.message });
     } else {
         let buildManifest = parsed.value;
-        core.build(buildManifest,req.currentUser);
-        return res.status(201).json({ message: 'operation queued' });
+
+        //add job
+        var jobId = jobs.addJob({status:'In progress', task: buildManifest.task});
+        core.build(buildManifest,req.currentUser,jobId);
+        return res.status(201).json({ message: 'operation queued', jobId: jobId});
     }
 
 });
