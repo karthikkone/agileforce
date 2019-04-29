@@ -123,27 +123,34 @@ module.exports = {
     build: async function (manifest, currentUser, jobId) {
         logger.info(`build: build started by user ${currentUser.username} `);
         let job = jobs.findById(jobId);
-
+        let currentBuild;
         if (!job) {
             logger.debug('no job found with id ' + jobId);
         }
         try {
             let sourceOrg = orgManager.multiModeOrg();
+            //rest api connection to connected org
             let restApi = salesforce.rest(sourceOrg, currentUser.forceOauth);
+
+            //get current build sObject update status
+            currentBuild = await restApi.getBuild(manifest.buildName);
+            currentBuild.set('Status__c', 'In Progress');
+            restApi.updateBuild(currentBuild);
+
             let sourceOrgName = manifest.source.org.orgId;
             let targetOrgName = manifest.target.org.orgId;
             let sourceOrgOauth;
             let targetOrgOauth;
-
+            
             if (sourceOrgName == '__self__') {
                 logger.info('build: source org is connected org');
                 sourceOrgOauth = currentUser.forceOauth;
             } else {
                 let sourceOrgData = await restApi.getOrg(sourceOrgName);
                 sourceOrgOauth = await authManager.authenticateMultiModeOrg(org,
-                    sourceOrgData.username__c,
-                    sourceOrgData.password__c,
-                    sourceOrgData.token__c
+                    sourceOrgData.get('username__c'),
+                    sourceOrgData.get('password__c'),
+                    sourceOrgData.get('token__c')
                 );
             }
 
@@ -189,11 +196,16 @@ module.exports = {
             //task executed sucessfully
             if (jobId && job) {
                 jobs.updateStatus(jobId, 'successful');
+                //update status on Build sObject
+                currentBuild.set('Status__c', 'Success');
+                restApi.updateBuild(currentBuild);
             }
         } catch (err) {
             logger.debug('build failed with errors: ', err);
             if (jobId && job) {
                 jobs.updateStatus(jobId, 'failed');
+                currentBuild.set('Status__c', 'Failed');
+                restApi.updateBuild(currentBuild);
             }
         }
 
