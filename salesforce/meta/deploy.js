@@ -23,8 +23,19 @@ module.exports = {
     
         var validatePromise = org.meta.deployAndPoll(opts);
     
-        validatePromise.poller.on('poll', (pollRes) => {console.log('validate poll status: ',pollRes);})
-        validatePromise.poller.on('done', (pollRes) => {console.log('validate complete: ',pollRes);})
+        validatePromise.poller.on('poll', (pollRes) => {
+            console.log('validate poll status: ',pollRes);
+            
+        });
+
+        validatePromise.poller.on('done', (pollRes) => {
+            console.log('validate complete: ',pollRes);
+        });
+
+        validatePromise.poller.on('error', (pollRes) => {
+            console.log('validate complete: ',pollRes);
+        });
+
         return validatePromise;
     }
 }
