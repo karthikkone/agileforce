@@ -16,3 +16,5 @@ router.get('/:jobId/status', (req, res)=>{
         return res.status(200).json({status:job.status, jobId: jobId});
     }
 });
+
+module.exports=router;
