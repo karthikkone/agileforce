@@ -1,6 +1,6 @@
 module.exports = {
 
-    retrieveAndPoll: function retrieveAndPoll(org, retrieveOptions, oauth = null) {
+    retrieveAndPoll: function retrieveAndPoll(org, retrieveOptions,oauth = null) {
         if (!org) {
             return Promise.reject(new TypeError('org is required'));
         }
