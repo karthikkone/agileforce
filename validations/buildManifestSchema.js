@@ -69,6 +69,9 @@ const tasksSchema = joi.string().valid(tasks.RETRIEVE,
     tasks.UNDEPLOY)
     .required();
 
+
+const buildName = joi.string().required();
+
 //manifest schema used to parse request body
 const buildManifestSchema = joi.object({
     source: sourceSchema,
@@ -80,6 +83,7 @@ const buildManifestSchema = joi.object({
 })
 
 module.exports = {
+    buildName: buildName,
     sourceSchema: sourceSchema,
     componentSchema: componentSchema,
     testSchema: testSchema,
