@@ -108,13 +108,8 @@ router.get('/orgs', security.authFilter, (req, res) => {
     });
 });
 
-router.get('/meta', security.authFilter, (req, res) => {
+async function getMetadata(currentUser,payload) {
     try {
-        let payload = req.body;
-        let currentUser = req.currentUser;
-        if (!payload || !payload.source.org.orgId || payload.queries) {
-            return res.status(401).message({ error: 'invalid request' });
-        }
 
         let metaApi;
         if (payload.source.org.orgId == '__self__') {
@@ -138,12 +133,24 @@ router.get('/meta', security.authFilter, (req, res) => {
             queries: payload.queries
         });
 
-        return res.status(200).json(mdList);
+        return mdList;
+        
     } catch (err) {
         console.log('list metadata failed with errors: ',err);
-        return res.status(500).json({error: err.message});
+        throw err;
     }
-
+}
+router.get('/meta', security.authFilter, (req, res) => {
+    if (!req.payload || !req.payload.source.org.orgId || !req.payload.queries) {
+        return res.status(401).message({ error: 'invalid request' });
+    }
+    var promise = getMetadata(req.currentUser,req.body);
+    promise.then((metadata) => {
+        return res.status(200).json(metadata);
+    })
+    .catch((err) => {
+        return res.status(500).json({error: err.message});
+    })
 });
 
 
