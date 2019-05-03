@@ -140,7 +140,7 @@ async function getMetadata(currentUser,payload) {
         throw err;
     }
 }
-router.get('/meta', security.authFilter, (req, res) => {
+router.post('/meta', security.authFilter, (req, res) => {
     if (!req.payload || !req.payload.source.org.orgId || !req.payload.queries) {
         return res.status(401).message({ error: 'invalid request' });
     }
