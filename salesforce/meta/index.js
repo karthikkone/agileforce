@@ -1,6 +1,7 @@
 const deploy = require('./deploy');
 const validate = require('./validate');
 const retrieve = require('./retreive');
+const listMeta = require('./listMetadata');
 
 module.exports = function(org, oauth) {
     let metaModule = {};
@@ -15,6 +16,10 @@ module.exports = function(org, oauth) {
 
     metaModule.retrieveAndPoll = function(retrieveOptions) {
         return retrieve.retrieveAndPoll(org,retrieveOptions,oauth);
+    }
+
+    metaModule.listMetadata = function(queryOptions) {
+        return listMeta.listMetadata(org,queryOptions,oauth);
     }
     return metaModule;
 }
