@@ -141,8 +141,9 @@ async function getMetadata(currentUser,payload) {
     }
 }
 router.post('/meta', security.authFilter, (req, res) => {
-    if (!req.payload || !req.payload.source.org.orgId || !req.payload.queries) {
-        return res.status(401).message({ error: 'invalid request' });
+    let payload = req.body
+    if (!payload || !payload.source.org.orgId || !payload.queries) {
+        return res.status(401).json({ error: 'invalid request' });
     }
     var promise = getMetadata(req.currentUser,req.body);
     promise.then((metadata) => {
