@@ -127,7 +127,7 @@ async function getMetadata(currentUser,payload) {
                 sourceOrgData.get('password__c'),
                 sourceOrgData.get('token__c')
             );
-
+            console.log('source org oauth: '+sourceOrgOauth);
             metaApi = salesforce.meta(orgManager.multiModeOrg(), sourceOrgOauth);
         }
 
