@@ -20,20 +20,22 @@ module.exports = {
     },
 
     //code is access code in web server oauth flow
-    authenticateMultiModeOrg: function(org, code) {
+    authenticateMultiModeOrg: function(org, username, password, securityToken) {
         return new Promise((resolve, reject) => {
-
-            if (org && code) {
-                org.authenticate({code: code}, (err, resp) => {
-                    if (!err) {
-                        resolve(resp) //resp is oauth object
-                    } else {
-                        reject(err);
+        
+            if (org && username && password && securityToken) {
+                org.authenticate({username: username, password: password, securityToken: securityToken},
+                    (err, auth) => {
+                        if (!err) {
+                            resolve(org);
+                        } else {
+                            reject(err);
+                        }
                     }
-                });
+                );
             } else {
-                reject(new Error(`org: ${org} or access code : ${code} missing`));
+                reject(new Error(`org: ${org}, username, password or securityToken missing`));
             }
-        })
+        });
     }
 }
