@@ -27,7 +27,7 @@ module.exports = {
                 org.authenticate({username: username, password: password, securityToken: securityToken},
                     (err, auth) => {
                         if (!err) {
-                            resolve(org);
+                            resolve(auth);
                         } else {
                             reject(err);
                         }
