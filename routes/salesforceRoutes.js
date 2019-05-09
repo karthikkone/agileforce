@@ -122,7 +122,7 @@ async function getMetadata(currentUser,payload) {
             let sourceOrgData = await restApi.getOrg(payload.source.org.orgId);
             
             
-            let sourceOrgOauth = await authManager.authenticateMultiModeOrg(org,
+            let sourceOrgOauth = await authManager.authenticateMultiModeOrg(sourceOrg,
                 sourceOrgData.get('username__c'),
                 sourceOrgData.get('password__c'),
                 sourceOrgData.get('token__c')
