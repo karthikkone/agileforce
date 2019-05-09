@@ -117,9 +117,11 @@ async function getMetadata(currentUser,payload) {
             metaApi = salesforce.meta(orgManager.multiModeOrg(), currentUser.forceOauth);
         } else {
             let connectedOrg = orgManager.multiModeOrg();
+            let sourceOrg = orgManager.multiModeOrg();
             let restApi = salesforce.rest(connectedOrg, currentUser.forceOauth);
-            let sourceOrg = await restApi.getOrg(payload.source.org.orgId);
-
+            let sourceOrgData = await restApi.getOrg(payload.source.org.orgId);
+            
+            
             let sourceOrgOauth = await authManager.authenticateMultiModeOrg(org,
                 sourceOrgData.get('username__c'),
                 sourceOrgData.get('password__c'),
