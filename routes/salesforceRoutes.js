@@ -128,7 +128,7 @@ async function getMetadata(currentUser,payload) {
                 sourceOrgData.get('token__c')
             );
 
-            metaApi = salesforce.meta(sourceOrg, sourceOrgOauth);
+            metaApi = salesforce.meta(orgManager.multiModeOrg(), sourceOrgOauth);
         }
 
         let mdList = await metaApi.listMetadata({
