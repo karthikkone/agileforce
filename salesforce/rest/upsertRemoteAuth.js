@@ -28,7 +28,7 @@ module.exports = {
             logger.debug('Update RemoteAuth to '+JSON.stringify(existingRemoteAuth));
             dmlOptions.sobject = existingRemoteAuth;
 
-            return new Promise((resolve, request) => {
+            return new Promise((resolve, reject) => {
                 org.update(dmlOptions, (err, resp) => {
                     if (err) {
                         logger.error('failed to update RemoteAuth : '+ err);
