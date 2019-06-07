@@ -25,17 +25,20 @@ module.exports = {
             existingRemoteAuth.Description__c =  'agileforce auth @' + (new Date());
             existingRemoteAuth.Token__c = token;
             dmlOptions.sobject = existingRemoteAuth;
-
-            org.update(dmlOptions, (err, resp) => {
-                if (err) {
-                    logger.error('failed to update RemoteAuth : '+ err);
-                    reject(err);
-                } else {
-                    logger.info('RemoteAuth updated');
-                    logger.debug('RemoteAuth update result set '+JSON.stringify(resp));
-                    resolve(true);
-                }
+            
+            return new Promise((resolve, request) => {
+                org.update(dmlOptions, (err, resp) => {
+                    if (err) {
+                        logger.error('failed to update RemoteAuth : '+ err);
+                        reject(err);
+                    } else {
+                        logger.info('RemoteAuth updated');
+                        logger.debug('RemoteAuth update result set '+JSON.stringify(resp));
+                        resolve(true);
+                    }
+                });
             });
+
 
         } else {
             //add required field sObject to dml Options
