@@ -60,6 +60,7 @@ module.exports = {
                     } else {
                         logger.info('RemoteAuth inserted');
                         logger.debug('RemoteAuth insert result set '+JSON.stringify(resp));
+                        resolve(true);
                     }
                 });
             }
