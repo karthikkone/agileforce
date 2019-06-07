@@ -25,33 +25,26 @@ module.exports = {
             existingRemoteAuth.Description__c =  'agileforce auth @' + (new Date());
             existingRemoteAuth.Token__c = token;
             dmlOptions.sobject = existingRemoteAuth;
-        }
-        else {
+
+            org.update(dmlOptions, (err, resp) => {
+                if (err) {
+                    logger.error('failed to update RemoteAuth : '+ err);
+                    reject(err);
+                } else {
+                    logger.info('RemoteAuth updated');
+                    logger.debug('RemoteAuth update result set '+JSON.stringify(resp));
+                    resolve(true);
+                }
+            });
+
+        } else {
             //add required field sObject to dml Options
             dmlOptions.sobject = nforce.createSObject('RemoteAuth__c', {
                 Description__c: 'agileforce auth @' + (new Date()),
                 Type__c: 'AgileForce',
                 Token__c: token,
             });
-        }
-
-        //insert or update record
-        return new Promise((resolve, reject) => {
-            logger.info('adding a remote auth object');
-
-            if (existingRemoteAuth) {
-                org.update(dmlOptions, (err, resp) => {
-                    if (err) {
-                        logger.error('failed to update RemoteAuth : '+ err);
-                        reject(err);
-                    } else {
-                        logger.info('RemoteAuth updated');
-                        logger.debug('RemoteAuth update result set '+JSON.stringify(resp));
-                        resolve(true);
-                    }
-                });
-            } else {
-
+            return new Promise((resolve, reject) => {
                 //insert new
                 org.insert(dmlOptions, (err, resp) => {
                     if (err) {
@@ -63,8 +56,8 @@ module.exports = {
                         resolve(true);
                     }
                 });
-            }
-            
-        });
+            });
+
+        }
     }
 }
