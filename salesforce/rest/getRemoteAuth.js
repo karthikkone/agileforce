@@ -18,15 +18,16 @@ module.exports = {
             return Promise.reject(new TypeError('forceUserId is required'));
         }
 
-        if (org.mode == 'multi') {
-            queryOptions.oauth = oauth;
-        }
-
         let q = `SELECT Id, Name, Description__c, Type__c, Token__c FROM RemoteAuth__c WHERE ownerId='${userSchema.forceUserId}' LIMIT 1`;
         let queryOptions = { query: q };
 
+        if (org.mode == 'multi') {
+            queryOptions.oauth = oauth;
+        }
+        
         //DEBUG show query
         logger.debug(`[Query RemoteAuth] ${q}`);
+
 
         return new Promise((resolve, reject) => {
            logger.info('finding remote auth object associated with user :', userSchema.username);
