@@ -41,7 +41,7 @@ module.exports = {
 
             if (existingRemoteAuth) {
                 org.update(dmlOptions, (err, resp) => {
-                    if (!err) {
+                    if (err) {
                         logger.error('failed to update RemoteAuth : '+ err);
                         reject(err);
                     } else {
@@ -54,7 +54,7 @@ module.exports = {
 
                 //insert new
                 org.insert(dmlOptions, (err, resp) => {
-                    if (!err) {
+                    if (err) {
                         logger.error('failed to insert RemoteAuth : '+ err);
                         reject(err);
                     } else {
