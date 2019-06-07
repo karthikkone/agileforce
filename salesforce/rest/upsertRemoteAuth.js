@@ -22,10 +22,12 @@ module.exports = {
 
         if (existingRemoteAuth != null) {
             //update existing sobject queried from REST api
-            existingRemoteAuth.Description__c =  'agileforce auth @' + (new Date());
-            existingRemoteAuth.Token__c = token;
+            existingRemoteAuth.set('Description__c','agileforce auth @' + new Date());
+            existingRemoteAuth.set('Token__c', token);
+
+            logger.debug('Update RemoteAuth to '+JSON.stringify(existingRemoteAuth));
             dmlOptions.sobject = existingRemoteAuth;
-            
+
             return new Promise((resolve, request) => {
                 org.update(dmlOptions, (err, resp) => {
                     if (err) {
