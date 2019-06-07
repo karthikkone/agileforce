@@ -21,7 +21,9 @@ module.exports = {
         }
 
         if (existingRemoteAuth != null) {
-            //existing sobject queried from REST api
+            //update existing sobject queried from REST api
+            existingRemoteAuth.Description__c =  'agileforce auth @' + (new Date());
+            existingRemoteAuth.Token__c = token;
             dmlOptions.sobject = existingRemoteAuth;
         }
         else {
