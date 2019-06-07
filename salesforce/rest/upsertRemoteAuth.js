@@ -1,5 +1,5 @@
 const nforce = require('nforce');
-
+const logger = require('../../logger');
 module.exports = {
     addOrUpdateRemoteAuth: function (org,token, existingRemoteAuth = null, oauth = null) {
         let dmlOptions = {};
@@ -35,13 +35,14 @@ module.exports = {
 
         //insert or update record
         return new Promise((resolve, reject) => {
-            console.log('adding a remote auth object')
+            logger.info('adding a remote auth object')
             org.upsert(dmlOptions, (err, resp) => {
                 if (!err) {
-                    console.log(err);
+                    logger.error('failed to upsert RemoteAuth : '+ err);
                     reject(err);
                 } else {
-                    console.log('remote auth inserted');
+                    logger.info('Remote auth inserted');
+                    logger.debug('remote auth upsert result set '+JSON.stringify(resp));
                     resolve(true);
                 }
             });
