@@ -1,3 +1,5 @@
+const nforce = require('nforce');
+
 module.exports = {
     addOrUpdateRemoteAuth: function (org,token, existingRemoteAuth = null, oauth = null) {
         let dmlOptions = {};
