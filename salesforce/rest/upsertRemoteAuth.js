@@ -37,17 +37,33 @@ module.exports = {
 
         //insert or update record
         return new Promise((resolve, reject) => {
-            logger.info('adding a remote auth object')
-            org.upsert(dmlOptions, (err, resp) => {
-                if (!err) {
-                    logger.error('failed to upsert RemoteAuth : '+ err);
-                    reject(err);
-                } else {
-                    logger.info('Remote auth inserted');
-                    logger.debug('remote auth upsert result set '+JSON.stringify(resp));
-                    resolve(true);
-                }
-            });
+            logger.info('adding a remote auth object');
+
+            if (existingRemoteAuth) {
+                org.update(dmlOptions, (err, resp) => {
+                    if (!err) {
+                        logger.error('failed to update RemoteAuth : '+ err);
+                        reject(err);
+                    } else {
+                        logger.info('RemoteAuth updated');
+                        logger.debug('RemoteAuth update result set '+JSON.stringify(resp));
+                        resolve(true);
+                    }
+                });
+            } else {
+
+                //insert new
+                org.insert(dmlOptions, (err, resp) => {
+                    if (!err) {
+                        logger.error('failed to insert RemoteAuth : '+ err);
+                        reject(err);
+                    } else {
+                        logger.info('RemoteAuth inserted');
+                        logger.debug('RemoteAuth insert result set '+JSON.stringify(resp));
+                    }
+                });
+            }
+            
         });
     }
 }
